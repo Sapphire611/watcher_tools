@@ -34,12 +34,14 @@
             }}
             个重复)</span
           >
-          <el-button type="link" @click="handleClear">清空所有</el-button>
+          <el-button type="default" @click="handleClear">清空所有</el-button>
         </div>
       </template>
 
       <div class="stats-info">
-        <el-tag type="success" size="large">总数: {{ lotCheckStore.allItems.length }}</el-tag>
+        <el-tag type="success" size="large"
+          >总数: {{ lotCheckStore.allItems.length }}</el-tag
+        >
         <el-tag type="warning" size="large"
           >重复: {{ duplicates.length }}</el-tag
         >

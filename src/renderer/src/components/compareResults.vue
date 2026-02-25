@@ -2,21 +2,35 @@
   <div class="page">
     <h2>比对结果</h2>
 
-    将【查看lot列表中是否重复】的重复项 与 【统计去重后的复判结果】去重后的列表进行比对
+    将【查看lot列表中是否重复】的重复项 与
+    【统计去重后的复判结果】去重后的列表进行比对
 
-    <el-card v-if="!lotCheckStore.allItems.length || !mongoCheckStore.analyzed" class="info-card">
+    <el-card
+      v-if="!lotCheckStore.allItems.length || !mongoCheckStore.analyzed"
+      class="info-card"
+    >
       <el-empty description="请先完成以下两个操作">
         <div class="steps">
           <div class="step">
-            <el-tag :type="lotCheckStore.allItems.length > 0 ? 'success' : 'info'" size="large">
+            <el-tag
+              :type="lotCheckStore.allItems.length > 0 ? 'success' : 'info'"
+              size="large"
+            >
               步骤1: 在【查看lot列表中是否重复】中添加数据
             </el-tag>
-            <el-tag v-if="lotCheckStore.allItems.length > 0" type="success" size="small">
+            <el-tag
+              v-if="lotCheckStore.allItems.length > 0"
+              type="success"
+              size="small"
+            >
               ✓ 已完成 ({{ lotCheckStore.allItems.length }} 项)
             </el-tag>
           </div>
           <div class="step">
-            <el-tag :type="mongoCheckStore.analyzed ? 'success' : 'info'" size="large">
+            <el-tag
+              :type="mongoCheckStore.analyzed ? 'success' : 'info'"
+              size="large"
+            >
               步骤2: 在【统计去重后的复判结果】中分析数据
             </el-tag>
             <el-tag v-if="mongoCheckStore.analyzed" type="success" size="small">
@@ -31,15 +45,23 @@
       <template #header>
         <div class="card-header">
           <span>比对结果</span>
-          <el-button type="link" @click="handleRefresh">刷新</el-button>
+          <el-button type="default" @click="handleRefresh">刷新</el-button>
         </div>
       </template>
 
       <div class="stats-info">
-        <el-tag type="info" size="large">Lot重复项: {{ lotDuplicates.length }}</el-tag>
-        <el-tag type="success" size="large">Mongo唯一项: {{ mongoCheckStore.uniqueSnList.length }}</el-tag>
-        <el-tag type="warning" size="large">匹配项: {{ matchedItems.length }}</el-tag>
-        <el-tag type="danger" size="large">不匹配项: {{ unmatchedItems.length }}</el-tag>
+        <el-tag type="info" size="large"
+          >Lot重复项: {{ lotDuplicates.length }}</el-tag
+        >
+        <el-tag type="success" size="large"
+          >Mongo唯一项: {{ mongoCheckStore.uniqueSnList.length }}</el-tag
+        >
+        <el-tag type="warning" size="large"
+          >匹配项: {{ matchedItems.length }}</el-tag
+        >
+        <el-tag type="danger" size="large"
+          >不匹配项: {{ unmatchedItems.length }}</el-tag
+        >
       </div>
 
       <el-divider />
@@ -47,13 +69,15 @@
       <el-tabs v-model="activeTab">
         <el-tab-pane label="匹配项" name="matched">
           <div class="tab-description">
-            <el-text type="success">在Lot重复项中且在Mongo唯一列表中的项</el-text>
+            <el-text type="success"
+              >在Lot重复项中且在Mongo唯一列表中的项</el-text
+            >
           </div>
           <el-input
             v-model="searchMatched"
             placeholder="搜索匹配项..."
             clearable
-            style="margin-bottom: 10px; width: 300px;"
+            style="margin-bottom: 10px; width: 300px"
           />
           <div class="items-grid">
             <el-tag
@@ -69,13 +93,15 @@
 
         <el-tab-pane label="不匹配项" name="unmatched">
           <div class="tab-description">
-            <el-text type="danger">在Lot重复项中但不在Mongo唯一列表中的项</el-text>
+            <el-text type="danger"
+              >在Lot重复项中但不在Mongo唯一列表中的项</el-text
+            >
           </div>
           <el-input
             v-model="searchUnmatched"
             placeholder="搜索不匹配项..."
             clearable
-            style="margin-bottom: 10px; width: 300px;"
+            style="margin-bottom: 10px; width: 300px"
           />
           <div class="items-grid">
             <el-tag
@@ -91,15 +117,28 @@
 
         <el-tab-pane label="Lot重复项详情" name="lot-duplicates">
           <div class="tab-description">
-            <el-text type="warning">Lot列表中的所有重复项（出现次数>1）</el-text>
+            <el-text type="warning"
+              >Lot列表中的所有重复项（出现次数>1）</el-text
+            >
           </div>
-          <el-table :data="lotDuplicatesTableData" style="width: 100%" max-height="400">
+          <el-table
+            :data="lotDuplicatesTableData"
+            style="width: 100%"
+            max-height="400"
+          >
             <el-table-column prop="item" label="项" width="300" />
             <el-table-column prop="count" label="出现次数" width="100" />
             <el-table-column prop="status" label="比对状态" width="120">
               <template #default="scope">
-                <el-tag :type="matchedItems.includes(scope.row.item) ? 'success' : 'danger'" size="small">
-                  {{ matchedItems.includes(scope.row.item) ? '匹配' : '不匹配' }}
+                <el-tag
+                  :type="
+                    matchedItems.includes(scope.row.item) ? 'success' : 'danger'
+                  "
+                  size="small"
+                >
+                  {{
+                    matchedItems.includes(scope.row.item) ? "匹配" : "不匹配"
+                  }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -115,7 +154,7 @@
             v-model="searchMongo"
             placeholder="搜索Mongo唯一项..."
             clearable
-            style="margin-bottom: 10px; width: 300px;"
+            style="margin-bottom: 10px; width: 300px"
           />
           <div class="items-grid">
             <el-tag
@@ -183,7 +222,7 @@ const filteredMatched = computed(() => {
     return matchedItems.value;
   }
   return matchedItems.value.filter((item) =>
-    item.toLowerCase().includes(searchMatched.value.toLowerCase())
+    item.toLowerCase().includes(searchMatched.value.toLowerCase()),
   );
 });
 
@@ -193,7 +232,7 @@ const filteredUnmatched = computed(() => {
     return unmatchedItems.value;
   }
   return unmatchedItems.value.filter((item) =>
-    item.toLowerCase().includes(searchUnmatched.value.toLowerCase())
+    item.toLowerCase().includes(searchUnmatched.value.toLowerCase()),
   );
 });
 
@@ -203,7 +242,7 @@ const filteredMongo = computed(() => {
     return mongoCheckStore.uniqueSnList;
   }
   return mongoCheckStore.uniqueSnList.filter((item) =>
-    item.toLowerCase().includes(searchMongo.value.toLowerCase())
+    item.toLowerCase().includes(searchMongo.value.toLowerCase()),
   );
 });
 

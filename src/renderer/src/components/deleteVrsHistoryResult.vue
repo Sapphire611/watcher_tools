@@ -10,7 +10,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -47,10 +47,16 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="deleteVrsHistoryStore.responseResult = ''">清除</el-button>
+          <el-button
+            type="default"
+            @click="deleteVrsHistoryStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
-      <pre class="result-content">{{ deleteVrsHistoryStore.responseResult }}</pre>
+      <pre class="result-content">{{
+        deleteVrsHistoryStore.responseResult
+      }}</pre>
     </el-card>
   </div>
 </template>
@@ -114,17 +120,24 @@ const handleDelete = async () => {
     };
 
     // 使用主进程的 HTTP 请求，避免跨域问题
-    const result = await window.api.httpPost(deleteVrsHistoryStore.serverUrl, output);
+    const result = await window.api.httpPost(
+      deleteVrsHistoryStore.serverUrl,
+      output,
+    );
 
     if (result.success && result.data) {
-      deleteVrsHistoryStore.setResponseResult(JSON.stringify(result.data, null, 2));
+      deleteVrsHistoryStore.setResponseResult(
+        JSON.stringify(result.data, null, 2),
+      );
       ElMessage({
         message: "删除成功",
         type: "success",
         offset: 80,
       });
     } else {
-      deleteVrsHistoryStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      deleteVrsHistoryStore.setResponseResult(
+        `请求失败: ${result.error || "未知错误"}`,
+      );
       ElMessage({
         message: "删除失败",
         type: "error",

@@ -8,7 +8,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -45,7 +45,9 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="queryLotStore.responseResult = ''">清除</el-button>
+          <el-button type="default" @click="queryLotStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
       <pre class="result-content">{{ queryLotStore.responseResult }}</pre>
@@ -122,7 +124,9 @@ const handleSubmit = async () => {
         offset: 80,
       });
     } else {
-      queryLotStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      queryLotStore.setResponseResult(
+        `请求失败: ${result.error || "未知错误"}`,
+      );
       ElMessage({
         message: "查询失败",
         type: "error",

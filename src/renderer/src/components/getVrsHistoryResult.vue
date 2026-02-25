@@ -10,7 +10,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -27,7 +27,11 @@
         </el-form-item>
 
         <el-form-item label="SN">
-          <el-input v-model="getVrsHistoryStore.sn" placeholder="请输入SN号" clearable />
+          <el-input
+            v-model="getVrsHistoryStore.sn"
+            placeholder="请输入SN号"
+            clearable
+          />
         </el-form-item>
 
         <el-form-item>
@@ -43,7 +47,11 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="getVrsHistoryStore.responseResult = ''">清除</el-button>
+          <el-button
+            type="default"
+            @click="getVrsHistoryStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
       <pre class="result-content">{{ getVrsHistoryStore.responseResult }}</pre>
@@ -110,17 +118,24 @@ const handleQuery = async () => {
     };
 
     // 使用主进程的 HTTP 请求，避免跨域问题
-    const result = await window.api.httpPost(getVrsHistoryStore.serverUrl, output);
+    const result = await window.api.httpPost(
+      getVrsHistoryStore.serverUrl,
+      output,
+    );
 
     if (result.success && result.data) {
-      getVrsHistoryStore.setResponseResult(JSON.stringify(result.data, null, 2));
+      getVrsHistoryStore.setResponseResult(
+        JSON.stringify(result.data, null, 2),
+      );
       ElMessage({
         message: "查询成功",
         type: "success",
         offset: 80,
       });
     } else {
-      getVrsHistoryStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      getVrsHistoryStore.setResponseResult(
+        `请求失败: ${result.error || "未知错误"}`,
+      );
       ElMessage({
         message: "查询失败",
         type: "error",

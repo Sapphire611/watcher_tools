@@ -10,7 +10,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -57,10 +57,16 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="addAiInferenceAStore.responseResult = ''">清除</el-button>
+          <el-button
+            type="default"
+            @click="addAiInferenceAStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
-      <pre class="result-content">{{ addAiInferenceAStore.responseResult }}</pre>
+      <pre class="result-content">{{
+        addAiInferenceAStore.responseResult
+      }}</pre>
     </el-card>
   </div>
 </template>
@@ -130,17 +136,24 @@ const handleSubmit = async () => {
     };
 
     // 使用主进程的 HTTP 请求，避免跨域问题
-    const result = await window.api.httpPost(addAiInferenceAStore.serverUrl, output);
+    const result = await window.api.httpPost(
+      addAiInferenceAStore.serverUrl,
+      output,
+    );
 
     if (result.success && result.data) {
-      addAiInferenceAStore.setResponseResult(JSON.stringify(result.data, null, 2));
+      addAiInferenceAStore.setResponseResult(
+        JSON.stringify(result.data, null, 2),
+      );
       ElMessage({
         message: "数据提交成功",
         type: "success",
         offset: 80,
       });
     } else {
-      addAiInferenceAStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      addAiInferenceAStore.setResponseResult(
+        `请求失败: ${result.error || "未知错误"}`,
+      );
       ElMessage({
         message: "数据提交失败",
         type: "error",

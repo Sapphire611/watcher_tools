@@ -10,7 +10,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -57,7 +57,9 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="addLotStore.responseResult = ''">清除</el-button>
+          <el-button type="default" @click="addLotStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
       <pre class="result-content">{{ addLotStore.responseResult }}</pre>
@@ -104,11 +106,7 @@ const copyExampleCode = () => {
 
 const handleSubmit = async () => {
   // 验证表单
-  if (
-    !addLotStore.lot ||
-    !addLotStore.snList ||
-    !addLotStore.serverUrl
-  ) {
+  if (!addLotStore.lot || !addLotStore.snList || !addLotStore.serverUrl) {
     ElMessage({
       message: "请填写所有必填项",
       type: "warning",

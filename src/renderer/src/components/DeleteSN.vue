@@ -10,7 +10,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -47,7 +47,9 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="deleteSnStore.responseResult = ''">清除</el-button>
+          <el-button type="default" @click="deleteSnStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
       <pre class="result-content">{{ deleteSnStore.responseResult }}</pre>
@@ -124,7 +126,9 @@ const handleDelete = async () => {
         offset: 80,
       });
     } else {
-      deleteSnStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      deleteSnStore.setResponseResult(
+        `请求失败: ${result.error || "未知错误"}`,
+      );
       ElMessage({
         message: "删除失败",
         type: "error",

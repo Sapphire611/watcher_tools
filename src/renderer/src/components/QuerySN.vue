@@ -8,7 +8,7 @@
           <el-tag type="warning">POST</el-tag>
           http://localhost:9877 (请求示例)
 
-          <el-button type="link" @click="copyExampleCode">复制</el-button>
+          <el-button type="default" @click="copyExampleCode">复制</el-button>
         </div>
       </template>
       <pre class="code-content">{{ exampleCode }}</pre>
@@ -25,7 +25,11 @@
         </el-form-item>
 
         <el-form-item label="SN">
-          <el-input v-model="querySnStore.sn" placeholder="请输入SN号" clearable />
+          <el-input
+            v-model="querySnStore.sn"
+            placeholder="请输入SN号"
+            clearable
+          />
         </el-form-item>
 
         <el-form-item>
@@ -41,7 +45,9 @@
       <template #header>
         <div class="card-header">
           <span>接口返回结果</span>
-          <el-button type="link" @click="querySnStore.responseResult = ''">清除</el-button>
+          <el-button type="default" @click="querySnStore.responseResult = ''"
+            >清除</el-button
+          >
         </div>
       </template>
       <pre class="result-content">{{ querySnStore.responseResult }}</pre>

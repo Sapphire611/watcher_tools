@@ -16,8 +16,32 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       contextIsolation: true,
-      nodeIntegration: false
-    }
+      nodeIntegration: false,
+      // 安全增强设置
+      webSecurity: true,
+      allowRunningInsecureContent: false,
+      experimentalFeatures: false,
+      disableBlinkFeatures: 'Auxclick',
+    },
+  })
+
+  // 设置会话级别的内容安全策略
+  const ses = mainWindow.webContents.session
+  ses.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "img-src 'self' data:; " +
+            "font-src 'self' data:; " +
+            "connect-src 'self' http://localhost:* https://*; " +
+            "object-src 'none';",
+        ],
+      },
+    })
   })
 
   mainWindow.on('ready-to-show', () => {
