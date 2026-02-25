@@ -1,0 +1,60 @@
+{
+  "name": "watcher-tools",
+  "version": "1.0.0",
+  "description": "Electron + Vue3 + TypeScript desktop application",
+  "main": "out/main/index.js",
+  "author": "Sapphire611",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "build:win": "npm run build && electron-builder --win",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "icon": "src/renderer/src/assets/images/logo.jpg",
+    "win": {
+      "icon": "src/renderer/src/assets/images/logo.jpg",
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "icon": "src/renderer/src/assets/images/logo.jpg",
+      "target": [
+        "dmg"
+      ]
+    },
+    "linux": {
+      "icon": "src/renderer/src/assets/images/logo.jpg",
+      "target": [
+        "AppImage"
+      ]
+    }
+  },
+  "dependencies": {
+    "pinia": "^2.3.1",
+    "vue": "^3.5.29",
+    "vue-router": "^4.6.4",
+    "@electron-toolkit/utils": "^3.0.0",
+    "element-plus": "^2.8.0",
+    "axios": "^1.7.9",
+    "dayjs": "^1.11.13"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vue-tsc": "^2.1.10",
+    "unplugin-auto-import": "^0.19.0",
+    "unplugin-vue-components": "^0.27.0",
+    "electron-devtools-installer": "^3.2.0"
+  }
+}
