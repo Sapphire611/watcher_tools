@@ -16,25 +16,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useCounterStore } from "@/stores/counter";
+import { ref, onMounted } from 'vue'
+import { useCounterStore } from '@/stores/counter'
 
-const counter = useCounterStore();
-const electronVersion = ref("");
-const pingResult = ref("Click to ping");
+const counter = useCounterStore()
+const electronVersion = ref('')
+const pingResult = ref('Click to ping')
 
 onMounted(async () => {
-  electronVersion.value = await window.api.getAppVersion();
-});
+  electronVersion.value = await window.api.getAppVersion()
+})
 
 const handlePing = async () => {
-  pingResult.value = await window.api.ping();
-};
+  pingResult.value = await window.api.ping()
+}
 
 const handleAsync = async () => {
-  const result = await window.api.asyncOperation("test data");
-  pingResult.value = result;
-};
+  const result = await window.api.asyncOperation('test data')
+  pingResult.value = result
+}
+
 </script>
 
 <style scoped>

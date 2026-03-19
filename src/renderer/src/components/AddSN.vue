@@ -77,12 +77,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ElMessage } from "element-plus";
-import { useAddSnStore } from "../stores/dataMaintenance";
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useAddSnStore } from '../stores/dataMaintenance'
 
-const addSnStore = useAddSnStore();
-const loading = ref(false);
+const addSnStore = useAddSnStore()
+const loading = ref(false)
 
 // 示例源代码
 const exampleCode = `{
@@ -91,7 +91,7 @@ const exampleCode = `{
   "op_mode": "all_ow",
   "key": "200138069 0001",
   "value": "{\"side_infos\":{\"A\":\"C:/minio/deepiresults/20250722/20250722183901786010/20250722183901786010-panel.json\",\"B\":\"C:/minio/deepiresults/20250722/20250722184021494443/20250722184021494443-panel.json\"},\"sn\":\"20250722183901786010\"}"
-}`;
+}`
 
 // 复制示例代码
 const copyExampleCode = () => {
@@ -99,94 +99,93 @@ const copyExampleCode = () => {
     .writeText(exampleCode)
     .then(() => {
       ElMessage({
-        message: "复制成功",
-        type: "success",
+        message: '复制成功',
+        type: 'success',
         offset: 80,
-      });
+      })
     })
     .catch(() => {
       ElMessage({
-        message: "复制失败",
-        type: "error",
+        message: '复制失败',
+        type: 'error',
         offset: 80,
-      });
-    });
-};
+      })
+    })
+}
 
 const handleSubmit = async () => {
   // 验证表单
-  if (
-    !addSnStore.sideA ||
-    !addSnStore.sideB ||
-    !addSnStore.sn ||
-    !addSnStore.serverUrl
-  ) {
+  if (!addSnStore.sideA || !addSnStore.sn || !addSnStore.serverUrl) {
     ElMessage({
-      message: "请填写所有必填项",
-      type: "warning",
+      message: '请填写所有必填项',
+      type: 'warning',
       offset: 80,
-    });
-    return;
+    })
+    return
   }
 
-  loading.value = true;
+  loading.value = true
 
   try {
     // 处理路径分隔符：将 \ 和 \\ 替换为 /
-    const processedSideA = addSnStore.sideA.replace(/\\/g, "/");
-    const processedSideB = addSnStore.sideB.replace(/\\/g, "/");
+    const processedSideA = addSnStore.sideA.replace(/\\/g, '/')
+    const processedSideB = addSnStore.sideB.replace(/\\/g, '/')
 
     // 构建请求对象
     const obj = {
       side_infos: {
         A: processedSideA,
-        B: processedSideB,
+        // B: processedSideB,
       },
       sn: addSnStore.sn,
-    };
+    }
+
+    if (addSnStore.sideB) {
+      obj.side_infos['B'] = processedSideB
+    }
 
     const output = {
-      db_name: "AVI_results_db",
-      operation: "put",
-      op_mode: "all_ow",
+      db_name: 'AVI_results_db',
+      operation: 'put',
+      op_mode: 'all_ow',
       key: obj.sn,
       value: JSON.stringify(obj),
-    };
+    }
 
     // 使用主进程的 HTTP 请求，避免跨域问题
-    const result = await window.api.httpPost(addSnStore.serverUrl, output);
+    const result = await window.api.httpPost(addSnStore.serverUrl, output)
 
     if (result.success && result.data) {
-      addSnStore.setResponseResult(JSON.stringify(result.data, null, 2));
+      addSnStore.setResponseResult(JSON.stringify(result.data, null, 2))
       ElMessage({
-        message: "数据提交成功",
-        type: "success",
+        message: '数据提交成功',
+        type: 'success',
         offset: 80,
-      });
+      })
     } else {
-      addSnStore.setResponseResult(`请求失败: ${result.error || "未知错误"}`);
+      addSnStore.setResponseResult(`请求失败: ${result.error || '未知错误'}`)
       ElMessage({
-        message: "数据提交失败",
-        type: "error",
+        message: '数据提交失败',
+        type: 'error',
         offset: 80,
-      });
+      })
     }
   } catch (error) {
-    console.error("请求失败:", error);
-    addSnStore.setResponseResult(`请求失败: ${error}`);
+    console.error('请求失败:', error)
+    addSnStore.setResponseResult(`请求失败: ${error}`)
     ElMessage({
-      message: "数据提交失败",
-      type: "error",
+      message: '数据提交失败',
+      type: 'error',
       offset: 80,
-    });
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleReset = () => {
-  addSnStore.clear();
-};
+  addSnStore.clear()
+}
 </script>
 
 <style scoped>
@@ -209,7 +208,7 @@ const handleReset = () => {
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
-  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   color: #333;
 }
 
