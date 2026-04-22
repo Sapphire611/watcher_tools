@@ -31,6 +31,9 @@
           <span>删除 VRS 历史记录</span>
         </el-menu-item>
         <el-menu-item index="page3">
+          <span>获取 AI过滤结果</span>
+        </el-menu-item>
+        <el-menu-item index="page5">
           <span>添加 AI过滤 A面结果</span>
         </el-menu-item>
         <el-menu-item index="page4">
@@ -48,6 +51,7 @@
       <Page1 v-else-if="activeMenu === 'page1'" />
       <Page2 v-else-if="activeMenu === 'page2'" />
       <Page3 v-else-if="activeMenu === 'page3'" />
+      <Page5 v-else-if="activeMenu === 'page5'" />
       <Page4 v-else-if="activeMenu === 'page4'" />
     </el-main>
   </el-container>
@@ -63,7 +67,8 @@ import DeleteSN from "@/components/DeleteSN.vue";
 import DeleteLot from "@/components/DeleteLot.vue";
 import Page1 from "@/components/getVrsHistoryResult.vue";
 import Page2 from "@/components/deleteVrsHistoryResult.vue";
-import Page3 from "@/components/addAiInferenceResultA.vue";
+import Page3 from "@/components/getAiInferenceResult.vue";
+import Page5 from "@/components/addAiInferenceResultA.vue";
 import Page4 from "@/components/addAiInferenceResultB.vue";
 
 const activeMenu = ref("demo1");

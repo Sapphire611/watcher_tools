@@ -5,7 +5,13 @@ const api = {
   ping: () => ipcRenderer.invoke('ping'),
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   asyncOperation: (arg: string) => ipcRenderer.invoke('async-operation', arg),
-  httpPost: (url: string, data: any) => ipcRenderer.invoke('http-post', url, data)
+  httpPost: (url: string, data: any) => ipcRenderer.invoke('http-post', url, data),
+  checkTcpPort: (host: string, port: number) => ipcRenderer.invoke('check-tcp-port', host, port),
+  checkMinioBucket: (endpoint: string, accessKey: string, secretKey: string, bucketName: string) =>
+    ipcRenderer.invoke('check-minio-bucket', endpoint, accessKey, secretKey, bucketName),
+  getMinioConfig: (bucketName: string) => ipcRenderer.invoke('get-minio-config', bucketName),
+  getAppConfigPath: () => ipcRenderer.invoke('get-app-config-path'),
+  openConfigFolder: () => ipcRenderer.invoke('open-config-folder')
 }
 
 // 在 window 对象上暴露受保护的方法

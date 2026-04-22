@@ -305,6 +305,41 @@ export const useDeleteVrsHistoryStore = defineStore('deleteVrsHistory', () => {
   }
 })
 
+// ==================== 获取AI过滤结果 ====================
+export const useGetAiInferenceResultStore = defineStore('getAiInferenceResult', () => {
+  const key = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    serverUrl,
+    responseResult,
+    setKey,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
 // ==================== 添加AI过滤A面结果 ====================
 export const useAddAiInferenceAStore = defineStore('addAiInferenceA', () => {
   const key = ref('')

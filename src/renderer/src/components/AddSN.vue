@@ -135,13 +135,9 @@ const handleSubmit = async () => {
     const obj = {
       side_infos: {
         A: processedSideA,
-        // B: processedSideB,
+        ...(addSnStore.sideB && { B: processedSideB }),
       },
       sn: addSnStore.sn,
-    }
-
-    if (addSnStore.sideB) {
-      obj.side_infos['B'] = processedSideB
     }
 
     const output = {

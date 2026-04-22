@@ -8,9 +8,9 @@
         @select="handleSelect"
       >
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/data">数据维护</el-menu-item>
-        <el-menu-item index="/tools">工具</el-menu-item>
-        <el-menu-item index="/settings">设置</el-menu-item>
+        <el-menu-item index="/data">IC数据维护</el-menu-item>
+        <el-menu-item index="/settings">本地设置</el-menu-item>
+        <el-menu-item index="/tools">其他工具</el-menu-item>
       </el-menu>
     </el-header>
     <el-main class="layout-main">
@@ -20,15 +20,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
-const activeMenu = ref(route.path);
+const route = useRoute()
+const activeMenu = ref(route.path)
 
 const handleSelect = (key: string) => {
-  activeMenu.value = key;
-};
+  activeMenu.value = key
+}
 </script>
 
 <style scoped>
