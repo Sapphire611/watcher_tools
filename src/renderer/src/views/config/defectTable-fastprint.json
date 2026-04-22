@@ -1,0 +1,492 @@
+	{
+	"1": {
+		"key": "1",
+		"name": "金面突出（硬金）",
+		"value": "WHAT",
+		"mesCode": "1",
+		"children": {}
+	},
+	"2": {
+		"key": "2",
+		"name": "金面突出（软金）",
+		"value": "ND",
+		"mesCode": "2",
+		"children": {}
+	},
+	"3": {
+		"key": "3",
+		"name": "金面凹陷（硬金）",
+		"value": "MDR",
+		"mesCode": "3",
+		"children": {}
+	},
+	"4": {
+		"key": "4",
+		"name": "金面凹陷（软金）",
+		"value": "S",
+		"mesCode": "4",
+		"children": {}
+	},
+	"5": {
+		"key": "5",
+		"name": "金面针痕（硬金）",
+		"value": "NK/RC/PH",
+		"mesCode": "5",
+		"children": {}
+	},
+	"6": {
+		"key": "6",
+		"name": "金面针痕（软金）",
+		"value": "EXC",
+		"mesCode": "6",
+		"children": {}
+	},
+	"7": {
+		"key": "7",
+		"name": "金面异物（硬金）",
+		"value": "AR",
+		"mesCode": "7",
+		"children": {}
+	},
+	"8": {
+		"key": "8",
+		"name": "金面异物（软金）",
+		"value": "CS",
+		"mesCode": "8",
+		"children": {}
+	},
+	"9": {
+		"key": "9",
+		"name": "金面粗糙（硬金）",
+		"value": "O",
+		"mesCode": "9",
+		"children": {}
+	},
+	"10": {
+		"key": "10",
+		"name": "金面粗糙（软金）",
+		"value": "INK",
+		"mesCode": "10",
+		"children": {}
+	},
+	"11": {
+		"key": "11",
+		"name": "金面划伤（硬金）",
+		"value": "SMD",
+		"mesCode": "11",
+		"children": {}
+	},
+	"12": {
+		"key": "12",
+		"name": "金面划伤（软金）",
+		"value": "SMM",
+		"mesCode": "12",
+		"children": {}
+	},
+	"13": {
+		"key": "13",
+		"name": "金面露镍（硬金）",
+		"value": "CFM",
+		"mesCode": "13",
+		"children": {}
+	},
+	"14": {
+		"key": "14",
+		"name": "金面露镍（软金）",
+		"value": "CCM",
+		"mesCode": "14",
+		"children": {}
+	},
+	"15": {
+		"key": "15",
+		"name": "金面露铜（硬金）",
+		"value": "LIF",
+		"mesCode": "15",
+		"children": {}
+	},
+	"16": {
+		"key": "16",
+		"name": "金面露铜（软金）",
+		"value": "MPU",
+		"mesCode": "16",
+		"children": {}
+	},
+	"17": {
+		"key": "17",
+		"name": "金面异色（硬金）",
+		"value": "AB",
+		"mesCode": "17",
+		"children": {}
+	},
+	"18": {
+		"key": "18",
+		"name": "金面异色（软金）",
+		"value": "CSQO",
+		"mesCode": "18",
+		"children": {}
+	},
+	"19": {
+		"key": "19",
+		"name": "金面凸起（硬金）",
+		"value": "DLM",
+		"mesCode": "19",
+		"children": {}
+	},
+	"20": {
+		"key": "20",
+		"name": "金面凸起（软金）",
+		"value": "AOC",
+		"mesCode": "20",
+		"children": {}
+	},
+	"21": {
+		"key": "21",
+		"name": "未镀金（硬金）",
+		"value": "W",
+		"mesCode": "21",
+		"children": {}
+	},
+	"22": {
+		"key": "22",
+		"name": "未镀金（软金）",
+		"value": "ECR",
+		"mesCode": "22",
+		"children": {}
+	},
+	"23": {
+		"key": "23",
+		"name": "渗金（硬金）",
+		"value": "EXP",
+		"mesCode": "23",
+		"children": {}
+	},
+	"24": {
+		"key": "24",
+		"name": "渗金（软金）",
+		"value": "GPT",
+		"mesCode": "24",
+		"children": {}
+	},
+	"25": {
+		"key": "25",
+		"name": "有金无镍（硬金）",
+		"value": "MPL",
+		"mesCode": "25",
+		"children": {}
+	},
+	"26": {
+		"key": "26",
+		"name": "有金无镍（软金）",
+		"value": "OX",
+		"mesCode": "26",
+		"children": {}
+	},
+	"30": {
+		"key": "30",
+		"name": "宽度不符",
+		"value": "BMD",
+		"mesCode": "30",
+		"children": {}
+	},
+	"31": {
+		"key": "31",
+		"name": "间距不符",
+		"value": "EXN",
+		"mesCode": "31",
+		"children": {}
+	},
+	"32": {
+		"key": "32",
+		"name": "蚀刻不净",
+		"value": "BUR",
+		"mesCode": "32",
+		"children": {}
+	},
+	"33": {
+		"key": "33",
+		"name": "退膜不净",
+		"value": "SBUR",
+		"mesCode": "33",
+		"children": {}
+	},
+	"34": {
+		"key": "34",
+		"name": "撞歪线",
+		"value": "SD",
+		"mesCode": "34",
+		"children": {}
+	},
+	"35": {
+		"key": "35",
+		"name": "开路",
+		"value": "MSS",
+		"mesCode": "35",
+		"children": {}
+	},
+	"36": {
+		"key": "36",
+		"name": "短路",
+		"value": "MFR",
+		"mesCode": "36",
+		"children": {}
+	},
+	"37": {
+		"key": "37",
+		"name": "缺口",
+		"value": "MPI",
+		"mesCode": "37",
+		"children": {}
+	},
+	"38": {
+		"key": "38",
+		"name": "针孔",
+		"value": "CHR",
+		"mesCode": "38",
+		"children": {}
+	},
+	"39": {
+		"key": "39",
+		"name": "渗镀",
+		"value": "PFM",
+		"mesCode": "39",
+		"children": {}
+	},
+	"41": {
+		"key": "41",
+		"name": "OSP异色",
+		"value": "AOG",
+		"mesCode": "41",
+		"children": {}
+	},
+	"42": {
+		"key": "42",
+		"name": "OSP异物",
+		"value": "FRS",
+		"mesCode": "42",
+		"children": {}
+	},
+	"51": {
+		"key": "51",
+		"name": "铜面划伤",
+		"value": "FLC",
+		"mesCode": "51",
+		"children": {}
+	},
+	"52": {
+		"key": "52",
+		"name": "铜面磨痕",
+		"value": "SCT",
+		"mesCode": "52",
+		"children": {}
+	},
+	"53": {
+		"key": "53",
+		"name": "铜面凹陷",
+		"value": "TMAX",
+		"mesCode": "53",
+		"children": {}
+	},
+	"60": {
+		"key": "60",
+		"name": "阻焊偏移",
+		"value": "DOS",
+		"mesCode": "60",
+		"children": {}
+	},
+	"61": {
+		"key": "61",
+		"name": "阻焊异物",
+		"value": "GCR",
+		"mesCode": "61",
+		"children": {}
+	},
+	"62": {
+		"key": "62",
+		"name": "阻焊凹陷",
+		"value": "AOI",
+		"mesCode": "62",
+		"children": {}
+	},
+	"63": {
+		"key": "63",
+		"name": "阻焊色差",
+		"value": "FDAM",
+		"mesCode": "63",
+		"children": {}
+	},
+	"64": {
+		"key": "64",
+		"name": "阻焊上盘",
+		"value": "DM",
+		"mesCode": "64",
+		"children": {}
+	},
+	"65": {
+		"key": "65",
+		"name": "阻焊划伤",
+		"value": "ZFAM",
+		"mesCode": "65",
+		"children": {}
+	},
+	"66": {
+		"key": "66",
+		"name": "阻焊聚油",
+		"value": "MSH",
+		"mesCode": "66",
+		"children": {}
+	},
+	"67": {
+		"key": "67",
+		"name": "假性露铜",
+		"value": "SOL-1",
+		"mesCode": "67",
+		"children": {}
+	},
+	"68": {
+		"key": "68",
+		"name": "显影不净",
+		"value": "DAP",
+		"mesCode": "68",
+		"children": {}
+	},
+	"69": {
+		"key": "69",
+		"name": "字符不清",
+		"value": "ART",
+		"mesCode": "69",
+		"children": {}
+	},
+	"70": {
+		"key": "70",
+		"name": "阻焊起皱",
+		"value": "LFT",
+		"mesCode": "70",
+		"children": {}
+	},
+	"71": {
+		"key": "71",
+		"name": "缺阻焊",
+		"value": "SOL-2",
+		"mesCode": "71",
+		"children": {}
+	},
+	"72": {
+		"key": "72",
+		"name": "开窗不良",
+		"value": "KCBL",
+		"mesCode": "72",
+		"children": {}
+	},
+	"80": {
+		"key": "80",
+		"name": "NPTH孔损",
+		"value": "DSM",
+		"mesCode": "80",
+		"children": {}
+	},
+	"81": {
+		"key": "81",
+		"name": "塞孔凸起",
+		"value": "SOL-3",
+		"mesCode": "81",
+		"children": {}
+	},
+	"82": {
+		"key": "82",
+		"name": "塞孔凹陷",
+		"value": "MW",
+		"mesCode": "82",
+		"children": {}
+	},
+	"90": {
+		"key": "90",
+		"name": "板翘",
+		"value": "SOL-4",
+		"mesCode": "90",
+		"children": {}
+	},
+	"91": {
+		"key": "91",
+		"name": "毛刺",
+		"value": "SOL-5",
+		"mesCode": "91",
+		"children": {}
+	},
+	"92": {
+		"key": "92",
+		"name": "Strip板损",
+		"value": "SM",
+		"mesCode": "92",
+		"children": {}
+	},
+	"93": {
+		"key": "93",
+		"name": "Unit板损",
+		"value": "SDAM",
+		"mesCode": "93",
+		"children": {}
+	},
+	"94": {
+		"key": "94",
+		"name": "板面异物",
+		"value": "PSA",
+		"mesCode": "94",
+		"children": {}
+	},
+	"95": {
+		"key": "95",
+		"name": "板面污染",
+		"value": "SDLM",
+		"mesCode": "95",
+		"children": {}
+	},
+	"96": {
+		"key": "96",
+		"name": "外形不良",
+		"value": "PI-SQO",
+		"mesCode": "96",
+		"children": {}
+	},
+	"97": {
+		"key": "97",
+		"name": "压伤",
+		"value": "YS",
+		"mesCode": "97",
+		"children": {}
+	},
+	"98": {
+		"key": "98",
+		"name": "胶渍",
+		"value": "JZ",
+		"mesCode": "98",
+		"children": {}
+	},
+	"99": {
+		"key": "99",
+		"name": "水性笔标记",
+		"value": "2DD",
+		"mesCode": "99",
+		"children": {}
+	},
+	"100": {
+		"key": "100",
+		"name": "划记不良",
+		"value": "SOL-6",
+		"mesCode": "100",
+		"children": {}
+	},
+	"101": {
+		"key": "101",
+		"name": "铣槽不良",
+		"value": "XCBL",
+		"mesCode": "101",
+		"children": {}
+	},
+	"102": {
+		"key": "102",
+		"name": "ok",
+		"value": "ok",
+		"mesCode": "ok",
+		"children": {}
+	}
+}

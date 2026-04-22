@@ -11,7 +11,12 @@ const api = {
     ipcRenderer.invoke('check-minio-bucket', endpoint, accessKey, secretKey, bucketName),
   getMinioConfig: (bucketName: string) => ipcRenderer.invoke('get-minio-config', bucketName),
   getAppConfigPath: () => ipcRenderer.invoke('get-app-config-path'),
-  openConfigFolder: () => ipcRenderer.invoke('open-config-folder')
+  openConfigFolder: () => ipcRenderer.invoke('open-config-folder'),
+  uploadProductSerial: () => ipcRenderer.invoke('upload-product-serial'),
+  getPresetConfigs: () => ipcRenderer.invoke('get-preset-configs'),
+  applyPresetConfig: (fileName: string) => ipcRenderer.invoke('apply-preset-config', fileName),
+  getMesTypes: () => ipcRenderer.invoke('get-mes-types'),
+  applyMesType: (mesType: string) => ipcRenderer.invoke('apply-mes-type', mesType)
 }
 
 // 在 window 对象上暴露受保护的方法

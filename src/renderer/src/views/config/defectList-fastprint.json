@@ -1,0 +1,644 @@
+[
+	{
+		"defectName": "AOI NG",
+		"translation": "AOI",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "阻焊凹陷",
+		"autoMark": true,
+		"customerTranslation": "阻焊凹陷",
+		"customerDefectCode": "62",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Goldfinger Miss",
+		"translation": "金手指消失",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "LIF",
+		"autoMark": true,
+		"customerTranslation": "金手指缺失",
+		"customerDefectCode": "15",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Nonplating",
+		"translation": "未镀金",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "OX",
+		"autoMark": true,
+		"customerTranslation": "手指未镀金",
+		"customerDefectCode": "26",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Expose NG",
+		"translation": "Expose NG",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "MDR",
+		"autoMark": true,
+		"customerTranslation": "sr涂沫",
+		"customerDefectCode": "3",
+		"defectType": "verifyDefects",
+		"destroyPanel": true
+	},
+	{
+		"defectName": "Circuit NG",
+		"translation": "缺损",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "AB",
+		"autoMark": true,
+		"customerTranslation": "缺损",
+		"customerDefectCode": "17",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AOI Mark",
+		"translation": "AOI",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "GPT",
+		"autoMark": true,
+		"customerTranslation": "划笔刀",
+		"customerDefectCode": "24",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AU WScratch DL NG",
+		"translation": "金手指伤处",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "NK/RC/PH",
+		"autoMark": true,
+		"customerTranslation": "金手指伤处",
+		"customerDefectCode": "5",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AU NK DL NG",
+		"translation": "金手指缺损",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "LIF",
+		"autoMark": true,
+		"customerTranslation": "金手指缺损",
+		"customerDefectCode": "15",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AU OX DL NG",
+		"translation": "金手指异色",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "EXC",
+		"autoMark": true,
+		"customerTranslation": "金手指异色",
+		"customerDefectCode": "6",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AU Scratch DL NG",
+		"translation": "金手指伤处",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "NK/RC/PH",
+		"autoMark": true,
+		"customerTranslation": "手指伤处",
+		"customerDefectCode": "5",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Circuit Scratch DL NG",
+		"translation": "线路压伤",
+		"channel": "",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "NK/RC/PH",
+		"autoMark": true,
+		"customerTranslation": "sr涂沫",
+		"customerDefectCode": "5",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Circuit Lack NG",
+		"translation": "线路缺损",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "AB",
+		"autoMark": true,
+		"customerTranslation": "缺损",
+		"customerDefectCode": "17",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Circuit OX DL NG",
+		"translation": "线路氧化",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "EXC",
+		"autoMark": true,
+		"customerTranslation": "线路氧化",
+		"customerDefectCode": "6",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Vent hole NG",
+		"translation": "孔堵",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "KD",
+		"autoMark": true,
+		"customerTranslation": "孔堵",
+		"customerDefectCode": "0",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "AOC",
+		"translation": "铜上有胶",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "AOC",
+		"autoMark": true,
+		"customerTranslation": "Pad 漏铜",
+		"customerDefectCode": "20",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Hotbar_AOC",
+		"translation": "铜上有胶",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "AOC",
+		"autoMark": false,
+		"customerTranslation": "Pad 漏铜",
+		"customerDefectCode": "20",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Hotbar_EXN",
+		"translation": "漏镍",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "EXN",
+		"autoMark": false,
+		"customerTranslation": "基板破损",
+		"customerDefectCode": "28",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerDisColor",
+		"translation": "异色",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "PFM",
+		"autoMark": false,
+		"customerTranslation": "SR下部伤处",
+		"customerDefectCode": "36",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Hotbar_MDR",
+		"translation": "孔堵塞",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "MDR",
+		"autoMark": false,
+		"customerTranslation": "sr涂沫",
+		"customerDefectCode": "3",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "EXC",
+		"translation": "漏铜",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "EXC",
+		"autoMark": false,
+		"customerTranslation": "手指变色",
+		"customerDefectCode": "6",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "EXN",
+		"translation": "漏镍",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "EXN",
+		"autoMark": false,
+		"customerTranslation": "基板破损",
+		"customerDefectCode": "28",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "FlexScratch",
+		"translation": "划痕",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "S",
+		"autoMark": false,
+		"customerTranslation": "手指异物",
+		"customerDefectCode": "4",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerDlm",
+		"translation": "脱层",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "DLM",
+		"autoMark": false,
+		"customerTranslation": "SM未现象",
+		"customerDefectCode": "19",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerGlueRe",
+		"translation": "流胶",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "CSQO",
+		"autoMark": false,
+		"customerTranslation": "PIN HOLE",
+		"customerDefectCode": "18",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerConn",
+		"translation": "废料残留",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerAoc",
+		"translation": "铜上有胶",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "AOC",
+		"autoMark": false,
+		"customerTranslation": "Pad 漏铜",
+		"customerDefectCode": "20",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "FM",
+		"translation": "异物",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Hotbar_ND",
+		"translation": "粒子",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "ND",
+		"autoMark": false,
+		"customerTranslation": "sr脏污/异物",
+		"customerDefectCode": "1",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerDos",
+		"translation": "表面凹陷",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "DOS",
+		"autoMark": false,
+		"customerTranslation": "表明凹陷",
+		"customerDefectCode": "41",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Stiffener_Miss",
+		"translation": "补强缺失",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "MSS",
+		"autoMark": false,
+		"customerTranslation": "镀金粗糙",
+		"customerDefectCode": "32",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "GoldFingerBlur",
+		"translation": "模糊",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "SCT",
+		"translation": "刮伤",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "SCT",
+		"autoMark": false,
+		"customerTranslation": "刮伤",
+		"customerDefectCode": "40",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "Hotbar_OVS",
+		"translation": "孔大",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "OVS",
+		"autoMark": false,
+		"customerTranslation": "sr划伤",
+		"customerDefectCode": "2",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "flex_dosdlm",
+		"translation": "柔板凹陷",
+		"color": "rgb(255,0,0)",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "flex_fpoints",
+		"translation": "F点",
+		"color": "rgb(255,0,0)",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "ReinForcingSteelMiss",
+		"translation": "钢片缺失",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "MPI",
+		"autoMark": false,
+		"customerTranslation": "OPEN",
+		"customerDefectCode": "34",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "ReinForcingSteelShift",
+		"translation": "钢片偏移",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "SD",
+		"autoMark": false,
+		"customerTranslation": "未腐蚀",
+		"customerDefectCode": "31",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "ReinForcingSteelDent",
+		"translation": "钢片凹陷",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "DOS",
+		"autoMark": false,
+		"customerTranslation": "表明凹陷",
+		"customerDefectCode": "41",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "FlexMic",
+		"translation": "MIC孔",
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "MDR",
+		"autoMark": false,
+		"customerTranslation": "sr涂沫",
+		"customerDefectCode": "3",
+		"defectType": "verifyDefects"
+	},
+	{
+		"defectName": "PFM",
+		"translation": "异物",
+		"channel": 1,
+		"color": "rgb(255,0,0)",
+		"customerDefectValue": "FM",
+		"autoMark": false,
+		"defectType": "verifyDefects"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_Nonplating",
+		"translation": "手指未镀金"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICGoldPad_Nonplating",
+		"translation": "金面未镀金"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_discolor",
+		"translation": "手指异色"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICGoldPad_discolor",
+		"translation": "金面异色"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICSr_Expose",
+		"translation": "漏铜"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICSr_Sr Cox",
+		"translation": "阻焊异物"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "discolor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICPCS_SCT"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICPCS_Defect"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "SR_discolor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBigGoIdPad_discoIor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBigGoldPad_discolor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "GoldPadMiss"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBasePanel_Expose"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICSr_Sr FM"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBasePanel_Sr Dos"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICCrossMark_discolor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBallPad_FM DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICBallPad_discolor"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICGoldPad_OX NG"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICBallPad_Discolor DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": true,
+		"seriousDefect": false,
+		"defectName": "ICBallPad_OX NG"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_AU OX DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_Burr DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_AU Scratch DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICGoldFinger_AU NK DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "Defect"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICSr Cox",
+		"translation": "ICSr Cox",
+		"customerDefectCode": "ICSr Cox",
+		"customerDefectValue": "ICSr Cox",
+		"customerTranslation": "ICSr Cox"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "ICCircuit_Circuit FM DL",
+		"translation": "中文名称 FM DL"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "Sr Dos",
+		"translation": "Sr Dos"
+	},
+	{
+		"color": "rgb(255,0,0)",
+		"scale": 1,
+		"autoMark": false,
+		"seriousDefect": false,
+		"defectName": "Sr FM",
+		"translation": "Sr FM"
+	}
+]

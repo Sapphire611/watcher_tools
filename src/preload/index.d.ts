@@ -35,6 +35,33 @@ declare global {
         success: boolean
         error?: string
       }>
+      uploadProductSerial: () => Promise<{
+        success: boolean
+        folderName?: string
+        targetPath?: string
+        error?: string
+      }>
+      getPresetConfigs: () => Promise<{
+        success: boolean
+        configs?: { [key: string]: string[] }
+        error?: string
+      }>
+      applyPresetConfig: (fileName: string) => Promise<{
+        success: boolean
+        appliedFile?: string
+        error?: string
+      }>
+      getMesTypes: () => Promise<{
+        success: boolean
+        mesTypes?: string[]
+        currentMesType?: string
+        error?: string
+      }>
+      applyMesType: (mesType: string) => Promise<{
+        success: boolean
+        mesType?: string
+        error?: string
+      }>
     }
   }
 }

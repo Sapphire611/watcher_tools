@@ -9,6 +9,9 @@
         <el-menu-item index="demo1">
           <span>查询SN</span>
         </el-menu-item>
+        <el-menu-item index="page6">
+          <span>上传料号</span>
+        </el-menu-item>
         <el-menu-item index="demo2">
           <span>添加SN</span>
         </el-menu-item>
@@ -43,6 +46,7 @@
     </el-aside>
     <el-main class="data-main">
       <QuerySN v-if="activeMenu === 'demo1'" />
+      <ProductSerialManagement v-else-if="activeMenu === 'page6'" />
       <AddSN v-else-if="activeMenu === 'demo2'" />
       <QueryLot v-else-if="activeMenu === 'demo3'" />
       <AddLot v-else-if="activeMenu === 'demo4'" />
@@ -70,6 +74,7 @@ import Page2 from "@/components/deleteVrsHistoryResult.vue";
 import Page3 from "@/components/getAiInferenceResult.vue";
 import Page5 from "@/components/addAiInferenceResultA.vue";
 import Page4 from "@/components/addAiInferenceResultB.vue";
+import ProductSerialManagement from "@/components/ProductSerialManagement.vue";
 
 const activeMenu = ref("demo1");
 
