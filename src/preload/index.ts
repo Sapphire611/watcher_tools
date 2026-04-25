@@ -14,7 +14,9 @@ const api = {
   openConfigFolder: () => ipcRenderer.invoke('open-config-folder'),
   uploadProductSerial: () => ipcRenderer.invoke('upload-product-serial'),
   getPresetConfigs: () => ipcRenderer.invoke('get-preset-configs'),
-  applyPresetConfig: (fileName: string) => ipcRenderer.invoke('apply-preset-config', fileName),
+  applyPresetConfig: (fileName: string, backupName?: string) => ipcRenderer.invoke('apply-preset-config', fileName, backupName),
+  getConfigFolders: () => ipcRenderer.invoke('get-config-folders'),
+  switchConfigFolder: (folderName: string, backupName?: string) => ipcRenderer.invoke('switch-config-folder', folderName, backupName),
   getMesTypes: () => ipcRenderer.invoke('get-mes-types'),
   applyMesType: (mesType: string) => ipcRenderer.invoke('apply-mes-type', mesType)
 }

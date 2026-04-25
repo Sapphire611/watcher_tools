@@ -9,6 +9,8 @@ import { register as getAppConfigPath } from './config/get-app-config-path'
 import { register as openConfigFolder } from './config/open-config-folder'
 import { register as getPresetConfigs } from './config/get-preset-configs'
 import { register as applyPresetConfig } from './config/apply-preset-config'
+import { register as getConfigFolders } from './config/get-config-folders'
+import { register as switchConfigFolder } from './config/switch-config-folder'
 import { register as uploadProductSerial } from './product/upload-product-serial'
 import { register as getMesTypes } from './mes/get-mes-types'
 import { register as applyMesType } from './mes/apply-mes-type'
@@ -29,6 +31,8 @@ export function createIPCHandlers(): void {
   openConfigFolder()
   getPresetConfigs()
   applyPresetConfig()
+  getConfigFolders()
+  switchConfigFolder()
   // product
   uploadProductSerial()
   // mes

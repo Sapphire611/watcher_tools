@@ -52,9 +52,20 @@ declare global {
         configs?: { [key: string]: string[] };
         error?: string;
       }>;
-      applyPresetConfig: (fileName: string) => Promise<{
+      applyPresetConfig: (fileName: string, backupName?: string) => Promise<{
         success: boolean;
         appliedFile?: string;
+        error?: string;
+      }>;
+      getConfigFolders: () => Promise<{
+        success: boolean;
+        folders?: string[];
+        error?: string;
+      }>;
+      switchConfigFolder: (folderName: string, backupName?: string) => Promise<{
+        success: boolean;
+        appliedFolder?: string;
+        needRestart?: boolean;
         error?: string;
       }>;
       getMesTypes: () => Promise<{

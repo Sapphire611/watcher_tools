@@ -7,14 +7,18 @@ export function register(): void {
     const { app } = await import('electron')
 
     try {
-      const appPath = app.getAppPath()
-      const configDir = path.join(appPath, 'src/renderer/src/views/config')
+      const configDir = path.join(app.getPath('appData'), 'watcher', 'config')
+
+      // 确保目录存在
+      await fs.promises.mkdir(configDir, { recursive: true })
 
       const files = await fs.promises.readdir(configDir)
       const jsonFiles = files.filter((file) => file.endsWith('.json'))
 
       const configs: { [key: string]: string[] } = {}
       for (const file of jsonFiles) {
+        // 匹配 defectList-xxx.json 和 defectTable-xxx.json
+        // 但不匹配 defectList.json 和 defectTable.json
         const match = file.match(/^(defectList|defectTable)-(.+)\.json$/)
         if (match) {
           const type = match[1]
