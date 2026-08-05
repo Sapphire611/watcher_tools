@@ -1,6 +1,6 @@
 {
   "name": "watcher-tools",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Watcher-tools",
   "main": "out/main/index.js",
   "author": "Sapphire611",

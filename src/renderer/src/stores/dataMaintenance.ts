@@ -41,6 +41,7 @@ export const useAddSnStore = defineStore('addSn', () => {
   const sideA = ref('')
   const sideB = ref('')
   const sn = ref('')
+  const machineName = ref('')
   const serverUrl = ref('http://localhost:9877')
   const responseResult = ref('')
 
@@ -56,6 +57,10 @@ export const useAddSnStore = defineStore('addSn', () => {
     sn.value = value
   }
 
+  function setMachineName(value: string) {
+    machineName.value = value
+  }
+
   function setServerUrl(value: string) {
     serverUrl.value = value
   }
@@ -68,6 +73,7 @@ export const useAddSnStore = defineStore('addSn', () => {
     sideA.value = ''
     sideB.value = ''
     sn.value = ''
+    machineName.value = ''
     serverUrl.value = 'http://localhost:9877'
     responseResult.value = ''
   }
@@ -76,11 +82,13 @@ export const useAddSnStore = defineStore('addSn', () => {
     sideA,
     sideB,
     sn,
+    machineName,
     serverUrl,
     responseResult,
     setSideA,
     setSideB,
     setSn,
+    setMachineName,
     setServerUrl,
     setResponseResult,
     clear
@@ -385,6 +393,127 @@ export const useAddAiInferenceAStore = defineStore('addAiInferenceA', () => {
 
 // ==================== 添加AI过滤B面结果 ====================
 export const useAddAiInferenceBStore = defineStore('addAiInferenceB', () => {
+  const key = ref('')
+  const value = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setValue(val: string) {
+    value.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    value.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    value,
+    serverUrl,
+    responseResult,
+    setKey,
+    setValue,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
+// ==================== 查看AI详细结果 (tovrs) ====================
+export const useViewAiDetailResultStore = defineStore('viewAiDetailResult', () => {
+  const key = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    serverUrl,
+    responseResult,
+    setKey,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
+// ==================== 添加AI详细结果A面 (tovrs) ====================
+export const useAddAiDetailResultAStore = defineStore('addAiDetailResultA', () => {
+  const key = ref('')
+  const value = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setValue(val: string) {
+    value.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    value.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    value,
+    serverUrl,
+    responseResult,
+    setKey,
+    setValue,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
+// ==================== 添加AI详细结果B面 (tovrs) ====================
+export const useAddAiDetailResultBStore = defineStore('addAiDetailResultB', () => {
   const key = ref('')
   const value = ref('')
   const serverUrl = ref('http://localhost:9877')

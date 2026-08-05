@@ -42,6 +42,15 @@
         <el-menu-item index="page4">
           <span>添加 AI过滤 B面结果</span>
         </el-menu-item>
+        <el-menu-item index="page7">
+          <span>查看 AI详细结果</span>
+        </el-menu-item>
+        <el-menu-item index="page8">
+          <span>添加 AI详细结果 A面</span>
+        </el-menu-item>
+        <el-menu-item index="page9">
+          <span>添加 AI详细结果 B面</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main class="data-main">
@@ -57,6 +66,9 @@
       <Page3 v-else-if="activeMenu === 'page3'" />
       <Page5 v-else-if="activeMenu === 'page5'" />
       <Page4 v-else-if="activeMenu === 'page4'" />
+      <Page7 v-else-if="activeMenu === 'page7'" />
+      <Page8 v-else-if="activeMenu === 'page8'" />
+      <Page9 v-else-if="activeMenu === 'page9'" />
     </el-main>
   </el-container>
 </template>
@@ -74,6 +86,9 @@ import Page2 from "@/components/deleteVrsHistoryResult.vue";
 import Page3 from "@/components/getAiInferenceResult.vue";
 import Page5 from "@/components/addAiInferenceResultA.vue";
 import Page4 from "@/components/addAiInferenceResultB.vue";
+import Page7 from "@/components/ViewAiDetailResult.vue";
+import Page8 from "@/components/AddAiDetailResultA.vue";
+import Page9 from "@/components/AddAiDetailResultB.vue";
 import ProductSerialManagement from "@/components/ProductSerialManagement.vue";
 
 const activeMenu = ref("demo1");

@@ -53,6 +53,14 @@
           />
         </el-form-item>
 
+        <el-form-item label="机台号">
+          <el-input
+            v-model="addSnStore.machineName"
+            placeholder="请输入机台号"
+            clearable
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="handleSubmit" :loading="loading">
             添加数据
@@ -90,7 +98,7 @@ const exampleCode = `{
   "operation": "put",
   "op_mode": "all_ow",
   "key": "200138069 0001",
-  "value": "{\"side_infos\":{\"A\":\"C:/minio/deepiresults/20250722/20250722183901786010/20250722183901786010-panel.json\",\"B\":\"C:/minio/deepiresults/20250722/20250722184021494443/20250722184021494443-panel.json\"},\"sn\":\"20250722183901786010\"}"
+  "value": "{\"side_infos\":{\"A\":\"C:/minio/deepiresults/20250722/20250722183901786010/20250722183901786010-panel.json\",\"B\":\"C:/minio/deepiresults/20250722/20250722184021494443/20250722184021494443-panel.json\"},\"sn\":\"20250722183901786010\",\"machineName\":\"M01\"}"
 }`
 
 // 复制示例代码
@@ -138,6 +146,7 @@ const handleSubmit = async () => {
         ...(addSnStore.sideB && { B: processedSideB }),
       },
       sn: addSnStore.sn,
+      machineName: addSnStore.machineName,
     }
 
     const output = {

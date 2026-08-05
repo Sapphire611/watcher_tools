@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddAiDetailResultA: typeof import('./src/components/AddAiDetailResultA.vue')['default']
+    AddAiDetailResultB: typeof import('./src/components/AddAiDetailResultB.vue')['default']
     AddAiInferenceResultA: typeof import('./src/components/addAiInferenceResultA.vue')['default']
     AddAiInferenceResultB: typeof import('./src/components/addAiInferenceResultB.vue')['default']
     AddLot: typeof import('./src/components/AddLot.vue')['default']
@@ -47,5 +49,6 @@ declare module 'vue' {
     QuerySN: typeof import('./src/components/QuerySN.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ViewAiDetailResult: typeof import('./src/components/ViewAiDetailResult.vue')['default']
   }
 }

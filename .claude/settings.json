@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm config *)",
+      "Read(//c/Users/liuliyi/AppData/Local/nvm/v24.14.1/node_modules/@anthropic-ai/**)",
+      "Read(//c/nvm4w/nodejs/node_modules/@anthropic-ai/claude-code/**)",
+      "Read(//c/Users/liuliyi/AppData/Local/nvm/v24.14.1/node_modules/@anthropic-ai/claude-code/**)",
+      "Bash(node \"C:/nvm4w/nodejs/node_modules/@anthropic-ai/claude-code/cli-wrapper.cjs\" --version)",
+      "Bash(npm cache *)",
+      "Bash(npm view *)",
+      "Read(//c/Users/liuliyi/AppData/Roaming/watcher/**)",
+      "Bash(awk '{print $1}')"
+    ]
+  }
+}
