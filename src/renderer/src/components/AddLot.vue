@@ -2,6 +2,11 @@
   <div class="add-lot-page">
     <h2>添加Lot</h2>
 
+    <el-tabs v-model="activeTab" class="db-tabs">
+      <el-tab-pane label="panel_list" name="panel_list" />
+      <el-tab-pane label="lot_panel" name="lot_panel" />
+    </el-tabs>
+
     <el-card class="code-card">
       <template #header>
         <div class="card-header">
@@ -66,26 +71,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useAddLotStore } from '../stores/dataMaintenance'
 
 const addLotStore = useAddLotStore()
 const loading = ref(false)
+const activeTab = ref('panel_list')
 
-// 示例源代码
-const exampleCode = `{
-  "db_name": "panel_list",
-  "operation": "put",
-  "op_mode": "all_ow",
-  "key": "200138069",
-  "value": "200138069 0001;200138069 0002;200138069 0003;200138069 0004;200138069 0005"
-}`
+// 示例源代码（跟随所选数据表）
+const exampleCode = computed(() => {
+  return JSON.stringify(
+    {
+      db_name: activeTab.value,
+      operation: 'put',
+      op_mode: 'all_ow',
+      key: '200138069',
+      value:
+        '200138069 0001;200138069 0002;200138069 0003;200138069 0004;200138069 0005',
+    },
+    null,
+    2
+  )
+})
 
 // 复制示例代码
 const copyExampleCode = () => {
   navigator.clipboard
-    .writeText(exampleCode)
+    .writeText(exampleCode.value)
     .then(() => {
       ElMessage({
         message: '复制成功',
@@ -118,7 +131,7 @@ const handleSubmit = async () => {
   try {
     // 构建请求对象
     const output = {
-      db_name: 'panel_list',
+      db_name: activeTab.value,
       operation: 'put',
       op_mode: 'all_ow',
       key: addLotStore.lot,
@@ -165,6 +178,10 @@ const handleReset = () => {
 .add-lot-page h2 {
   color: #409eff;
   margin-bottom: 15px;
+}
+
+.db-tabs {
+  max-width: 800px;
 }
 
 .code-card {

@@ -4,6 +4,11 @@
 
     根据Lot号删除对应的料号记录
 
+    <el-tabs v-model="activeTab" class="db-tabs">
+      <el-tab-pane label="panel_list" name="panel_list" />
+      <el-tab-pane label="lot_panel" name="lot_panel" />
+    </el-tabs>
+
     <el-card class="code-card">
       <template #header>
         <div class="card-header">
@@ -58,25 +63,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { ElMessage } from "element-plus";
 import { useDeleteLotStore } from "../stores/dataMaintenance";
 
 const deleteLotStore = useDeleteLotStore();
 const loading = ref(false);
+const activeTab = ref("panel_list");
 
-// 示例源代码
-const exampleCode = `{
-  "db_name": "panel_list",
-  "operation": "delete",
-  "op_mode": "all",
-  "key": "200138069"
-}`;
+// 示例源代码（跟随所选数据表）
+const exampleCode = computed(() => {
+  return JSON.stringify(
+    {
+      db_name: activeTab.value,
+      operation: "delete",
+      op_mode: "all",
+      key: "200138069",
+    },
+    null,
+    2
+  );
+});
 
 // 复制示例代码
 const copyExampleCode = () => {
   navigator.clipboard
-    .writeText(exampleCode)
+    .writeText(exampleCode.value)
     .then(() => {
       ElMessage({
         message: "复制成功",
@@ -109,7 +121,7 @@ const handleDelete = async () => {
   try {
     // 构建删除请求对象
     const output = {
-      db_name: "panel_list",
+      db_name: activeTab.value,
       operation: "delete",
       op_mode: "all",
       key: deleteLotStore.lot,
@@ -157,6 +169,10 @@ const handleReset = () => {
 .delete-lot-page h2 {
   color: #f56c6c;
   margin-bottom: 15px;
+}
+
+.db-tabs {
+  max-width: 800px;
 }
 
 .code-card {
