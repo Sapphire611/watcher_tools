@@ -512,6 +512,159 @@ export const useAddAiDetailResultAStore = defineStore('addAiDetailResultA', () =
   }
 })
 
+// ==================== 按日期范围查询历史数据 ====================
+export const useGetHistoryDataRangeStore = defineStore('getHistoryDataRange', () => {
+  const rangeStart = ref('')
+  const rangeEnd = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setRangeStart(val: string) {
+    rangeStart.value = val
+  }
+
+  function setRangeEnd(val: string) {
+    rangeEnd.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    rangeStart.value = ''
+    rangeEnd.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    rangeStart,
+    rangeEnd,
+    serverUrl,
+    responseResult,
+    setRangeStart,
+    setRangeEnd,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
+// ==================== 按Key查询历史数据 ====================
+export const useGetHistoryDataKeyStore = defineStore('getHistoryDataKey', () => {
+  const key = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    serverUrl,
+    responseResult,
+    setKey,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
+// ==================== 添加历史数据 ====================
+export const PUT_HISTORY_DATA_VALUE_TEMPLATE = `{
+  "id": "1",
+  "record_id": "1",
+  "lot": "2333444",
+  "lot_record_id": "2333444_1",
+  "serial_number": "20260204170259376109",
+  "productName": "210477e",
+  "decive_id": "3P-FCJ-001",
+  "cur_side": "D",
+  "result": "NG",
+  "defectNum": 54,
+  "defect_count_A": 16,
+  "defect_count_B": 38,
+  "defect_count_total": 27,
+  "ngCount": 1,
+  "okCount": 0,
+  "NF_count": 0,
+  "total_count": 1,
+  "pcsNum": 4,
+  "average_time": 0,
+  "put_product_total_time": 0,
+  "start_time": "17:02:53",
+  "end_time": "17:02:01",
+  "time": "20260204",
+  "insert_time": "20260204 17:02:30.708",
+  "GP_OX": 0,
+  "channel": "NG",
+  "is_retest": false,
+  "pile_seq": "1",
+  "panel_seq": "1"
+}`
+
+export const usePutHistoryDataStore = defineStore('putHistoryData', () => {
+  const key = ref('')
+  const value = ref(PUT_HISTORY_DATA_VALUE_TEMPLATE)
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setKey(val: string) {
+    key.value = val
+  }
+
+  function setValue(val: string) {
+    value.value = val
+  }
+
+  function setServerUrl(val: string) {
+    serverUrl.value = val
+  }
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    key.value = ''
+    value.value = PUT_HISTORY_DATA_VALUE_TEMPLATE
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    key,
+    value,
+    serverUrl,
+    responseResult,
+    setKey,
+    setValue,
+    setServerUrl,
+    setResponseResult,
+    clear
+  }
+})
+
 // ==================== 添加AI详细结果B面 (tovrs) ====================
 export const useAddAiDetailResultBStore = defineStore('addAiDetailResultB', () => {
   const key = ref('')

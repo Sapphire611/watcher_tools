@@ -51,6 +51,15 @@
         <el-menu-item index="page9">
           <span>添加 AI详细结果 B面</span>
         </el-menu-item>
+        <el-menu-item index="page12">
+          <span>添加历史数据</span>
+        </el-menu-item>
+        <el-menu-item index="page10">
+          <span>按日期范围查询历史数据</span>
+        </el-menu-item>
+        <el-menu-item index="page11">
+          <span>按Key查询历史数据</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main class="data-main">
@@ -69,48 +78,54 @@
       <Page7 v-else-if="activeMenu === 'page7'" />
       <Page8 v-else-if="activeMenu === 'page8'" />
       <Page9 v-else-if="activeMenu === 'page9'" />
+      <Page10 v-else-if="activeMenu === 'page10'" />
+      <Page11 v-else-if="activeMenu === 'page11'" />
+      <Page12 v-else-if="activeMenu === 'page12'" />
     </el-main>
   </el-container>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import AddSN from "@/components/AddSN.vue";
-import AddLot from "@/components/AddLot.vue";
-import QuerySN from "@/components/QuerySN.vue";
-import QueryLot from "@/components/QueryLot.vue";
-import DeleteSN from "@/components/DeleteSN.vue";
-import DeleteLot from "@/components/DeleteLot.vue";
-import Page1 from "@/components/getVrsHistoryResult.vue";
-import Page2 from "@/components/deleteVrsHistoryResult.vue";
-import Page3 from "@/components/getAiInferenceResult.vue";
-import Page5 from "@/components/addAiInferenceResultA.vue";
-import Page4 from "@/components/addAiInferenceResultB.vue";
-import Page7 from "@/components/ViewAiDetailResult.vue";
-import Page8 from "@/components/AddAiDetailResultA.vue";
-import Page9 from "@/components/AddAiDetailResultB.vue";
-import ProductSerialManagement from "@/components/ProductSerialManagement.vue";
+import { ref } from 'vue'
+import AddSN from '@/components/AddSN.vue'
+import AddLot from '@/components/AddLot.vue'
+import QuerySN from '@/components/QuerySN.vue'
+import QueryLot from '@/components/QueryLot.vue'
+import DeleteSN from '@/components/DeleteSN.vue'
+import DeleteLot from '@/components/DeleteLot.vue'
+import Page1 from '@/components/getVrsHistoryResult.vue'
+import Page2 from '@/components/deleteVrsHistoryResult.vue'
+import Page3 from '@/components/getAiInferenceResult.vue'
+import Page5 from '@/components/addAiInferenceResultA.vue'
+import Page4 from '@/components/addAiInferenceResultB.vue'
+import Page7 from '@/components/ViewAiDetailResult.vue'
+import Page8 from '@/components/AddAiDetailResultA.vue'
+import Page9 from '@/components/AddAiDetailResultB.vue'
+import Page10 from '@/components/getHistoryDataRange.vue'
+import Page11 from '@/components/getHistoryDataByKey.vue'
+import Page12 from '@/components/putHistoryData.vue'
+import ProductSerialManagement from '@/components/ProductSerialManagement.vue'
 
-const activeMenu = ref("demo1");
+const activeMenu = ref('demo1')
 
 const handleSelect = (key: string) => {
-  activeMenu.value = key;
-};
+  activeMenu.value = key
+}
 </script>
 
 <style scoped>
 .data-container {
-  height: 100%;
+  min-height: 100%;
 }
 
 .data-aside {
   background-color: #f5f7fa;
   border-right: 1px solid #e4e7ed;
+  overflow: visible;
 }
 
 .data-menu {
   border-right: none;
-  height: 100%;
 }
 
 .data-main {

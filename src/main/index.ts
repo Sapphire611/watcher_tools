@@ -2,6 +2,21 @@ import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'node:path'
 import { createIPCHandlers } from './ipc'
 
+// GPU 着色器磁盘缓存写盘失败时(目录被旧进程/杀毒软件占用) 回退到内存缓存, 避免报错
+app.commandLine.appendSwitch('disable-gpu-shader-disk-cache')
+
+// 单实例锁: 避免多个实例争用同一缓存目录, 导致磁盘缓存创建失败
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+}
+
+app.on('second-instance', () => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
+
 let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
