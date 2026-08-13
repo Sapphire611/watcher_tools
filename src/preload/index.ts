@@ -18,7 +18,8 @@ const api = {
   getConfigFolders: () => ipcRenderer.invoke('get-config-folders'),
   switchConfigFolder: (folderName: string, backupName?: string) => ipcRenderer.invoke('switch-config-folder', folderName, backupName),
   getMesTypes: () => ipcRenderer.invoke('get-mes-types'),
-  applyMesType: (mesType: string) => ipcRenderer.invoke('apply-mes-type', mesType)
+  applyMesType: (mesType: string) => ipcRenderer.invoke('apply-mes-type', mesType),
+  selectAndReadFile: () => ipcRenderer.invoke('select-and-read-file')
 }
 
 // 在 window 对象上暴露受保护的方法

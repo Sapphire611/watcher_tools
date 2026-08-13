@@ -79,6 +79,12 @@ declare global {
         mesType?: string;
         error?: string;
       }>;
+      selectAndReadFile: () => Promise<{
+        canceled: boolean;
+        filePath?: string;
+        content?: string;
+        error?: string;
+      }>;
     };
   }
 }

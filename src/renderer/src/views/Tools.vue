@@ -15,27 +15,32 @@
         <el-menu-item index="page3">
           <span>比对结果</span>
         </el-menu-item>
+        <el-menu-item index="page4">
+          <span>解析 Range 历史数据</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main class="tools-main">
       <ToolPage1 v-if="activeMenu === 'page1'" />
       <ToolPage2 v-else-if="activeMenu === 'page2'" />
       <ToolPage3 v-else-if="activeMenu === 'page3'" />
+      <ToolPage4 v-else-if="activeMenu === 'page4'" />
     </el-main>
   </el-container>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import ToolPage1 from "@/components/checkLotDuplicate.vue";
-import ToolPage2 from "@/components/checkMongoDuplicate.vue";
-import ToolPage3 from "@/components/compareResults.vue";
+import { ref } from 'vue'
+import ToolPage1 from '@/components/checkLotDuplicate.vue'
+import ToolPage2 from '@/components/checkMongoDuplicate.vue'
+import ToolPage3 from '@/components/compareResults.vue'
+import ToolPage4 from '@/components/parseHistoryDataRange.vue'
 
-const activeMenu = ref("page1");
+const activeMenu = ref('page1')
 
 const handleSelect = (key: string) => {
-  activeMenu.value = key;
-};
+  activeMenu.value = key
+}
 </script>
 
 <style scoped>
@@ -56,5 +61,7 @@ const handleSelect = (key: string) => {
 .tools-main {
   padding: 20px;
   overflow: visible;
+  /* 防止表格内容把整个页面撑宽出现页面级横向滚动条 (滚动条只出现在表格内部) */
+  min-width: 0;
 }
 </style>

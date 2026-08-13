@@ -1,6 +1,7 @@
 import { register as ping } from './system/ping'
 import { register as getAppVersion } from './system/get-app-version'
 import { register as asyncOperation } from './system/async-operation'
+import { register as selectAndReadFile } from './system/select-and-read-file'
 import { register as httpPost } from './network/http-post'
 import { register as checkTcpPort } from './network/check-tcp-port'
 import { register as checkMinioBucket } from './network/check-minio-bucket'
@@ -20,6 +21,7 @@ export function createIPCHandlers(): void {
   ping()
   getAppVersion()
   asyncOperation()
+  selectAndReadFile()
   // network
   httpPost()
   checkTcpPort()
