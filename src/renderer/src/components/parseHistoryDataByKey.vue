@@ -1,8 +1,9 @@
 <template>
   <div class="page">
-    <h2>解析 history_data_list_datetime Range</h2>
+    <h2>解析 history_data_list_datetime 单天数据</h2>
 
-    可从接口直接查询、从本地 JSON 文件加载或粘贴 range_get 返回内容 (data_list 为双重 stringify, value 为 ; 分隔的多条记录), 支持按日期筛选浏览, 并可将某一天的数据编辑后 PUT 更新回服务器
+    粘贴 get (按Key查询) 返回的 value 或 {key, value} 元素, value 为 ; 分隔的多条 stringify 记录;
+    无 key 包裹时按记录里的 time 字段归组, 支持编辑某一天的数据后 PUT 更新回服务器
 
     <el-card class="load-card">
       <template #header>
@@ -14,26 +15,14 @@
         </div>
       </template>
 
-      <div class="http-row">
-        <el-input v-model="serverUrl" placeholder="http://localhost:9877" class="server-input" />
-        <el-input v-model="rangeStart" placeholder="开始日期 20260805" class="date-input" />
-        <el-input v-model="rangeEnd" placeholder="结束日期 20260813" class="date-input" />
-        <el-button type="primary" :loading="loadingQuery" @click="handleQueryFromServer">
-          从接口查询并解析
-        </el-button>
-      </div>
-
       <el-input
         v-model="rawText"
         type="textarea"
         :rows="6"
-        placeholder="粘贴 range_get 接口返回的完整 JSON, 或点击「选择文件」从本地加载"
+        placeholder="粘贴 get 接口返回的 value 字符串, 或 {key, value} 元素"
       />
 
       <div class="btn-row">
-        <el-button type="default" @click="handleSelectFile" :loading="loadingFile">
-          选择文件
-        </el-button>
         <el-button type="primary" @click="handleParse" :loading="loadingParse">
           解析
         </el-button>
@@ -86,6 +75,10 @@
         show-icon
         :title="`Value 格式为 JSON 数组, 每个元素是一条记录; PUT 更新会把所有记录用 ; 拼接成当天的完整 value, 整体覆盖发送到 ${serverUrl}`"
       />
+      <div class="server-row">
+        <span class="server-label">服务器地址:</span>
+        <el-input v-model="serverUrl" placeholder="http://localhost:9877" class="server-input" />
+      </div>
       <el-input
         v-model="editText"
         type="textarea"
@@ -135,10 +128,6 @@ const days = ref<DayData[]>([]);
 const columns = ref<string[]>([]);
 const selectedKey = ref("");
 const serverUrl = ref("http://localhost:9877");
-const rangeStart = ref("");
-const rangeEnd = ref("");
-const loadingFile = ref(false);
-const loadingQuery = ref(false);
 const loadingParse = ref(false);
 const putting = ref(false);
 
@@ -159,54 +148,61 @@ const tableRows = computed(() => {
   );
 });
 
-// 解析 range_get 响应, 兼容三种外层形态: 完整响应 {data_list: [...]} / 直接数组 / 单条元素 {key, value}
-// data_list 每个元素是 stringify 过的 {key, value}, value 又是 ; 分隔的多条 stringify 记录;
-// 末尾的 "end_range_send" 为哨兵需过滤; 单天 value 的解析见 parseHistoryDataByKey.vue
-function parseRangeResponse(text: string): { days: DayData[]; skipped: number } {
-  const obj = JSON.parse(text);
+// 解析单天数据: 接受 {key, value} 元素 或 直接 value 字符串 (; 分隔的 stringify 记录),
+// 也接受未转义的原始 value ({...};{...}); 无 key 时日期取每条记录的 time 字段
+function parseSingleDayResponse(text: string): { days: DayData[]; skipped: number } {
+  const trimmed = text.trim();
+  let obj: unknown;
+  try {
+    obj = JSON.parse(trimmed);
+  } catch {
+    obj = undefined;
+  }
+
+  let value: string;
+  let wrapperKey: string | null = null;
+  if (obj === undefined) {
+    // 不是合法 JSON, 视为未转义的原始 value
+    if (!trimmed.startsWith("{")) {
+      throw new Error("输入不是合法 JSON 也不是 value 字符串");
+    }
+    value = trimmed;
+  } else if (typeof obj === "string") {
+    value = obj;
+  } else if (
+    typeof obj === "object" &&
+    obj !== null &&
+    "key" in obj &&
+    "value" in obj &&
+    typeof obj.key === "string" &&
+    typeof obj.value === "string"
+  ) {
+    wrapperKey = obj.key;
+    value = obj.value;
+  } else {
+    throw new Error("无法识别的格式: 期望 {key, value} 或 value 字符串 (range_get 响应请用 Range 解析页)");
+  }
+
   const dayMap = new Map<string, RecordObj[]>();
   let skipped = 0;
 
-  // 解析单条记录 (value 中 ; 分隔的一段), 空串或解析失败返回 null
-  const parseRecord = (raw: string): RecordObj | null => {
-    const p = raw.trim();
-    if (!p) return null;
+  for (const part of value.split(";")) {
+    const p = part.trim();
+    if (!p) continue;
+    let rec: RecordObj;
     try {
-      return JSON.parse(p) as RecordObj;
+      rec = JSON.parse(p) as RecordObj;
     } catch {
-      return null;
+      skipped++;
+      continue;
     }
-  };
-
-  // 按日期 key 解析 ; 分隔的 value 内容
-  const parseValue = (key: string, value: string) => {
-    if (!dayMap.has(key)) dayMap.set(key, []);
-    for (const part of value.split(";")) {
-      const rec = parseRecord(part);
-      if (rec) {
-        dayMap.get(key)!.push(rec);
-      } else if (part.trim()) {
-        skipped++;
-      }
+    const day = wrapperKey ?? String(rec.time ?? "");
+    if (!day) {
+      skipped++;
+      continue;
     }
-  };
-
-  // 兼容三种外层形态: {data_list: [...]} / 直接数组 / 单条 {key, value}
-  let elements: unknown[];
-  if (Array.isArray(obj)) {
-    elements = obj;
-  } else if (Array.isArray(obj?.data_list)) {
-    elements = obj.data_list;
-  } else if (obj && "key" in obj && "value" in obj) {
-    elements = [obj];
-  } else {
-    throw new Error("无法识别的响应格式: 期望 data_list 数组、元素 {key, value} 或 value 字符串");
-  }
-
-  for (const el of elements) {
-    if (el === "end_range_send" || typeof el !== "string") continue;
-    const { key, value } = JSON.parse(el);
-    parseValue(key, value);
+    if (!dayMap.has(day)) dayMap.set(day, []);
+    dayMap.get(day)!.push(rec);
   }
 
   const list = [...dayMap.entries()].map(([key, records]) => ({ key, records }));
@@ -235,13 +231,13 @@ function rebuildColumns(): void {
 
 const handleParse = async () => {
   if (!rawText.value.trim()) {
-    ElMessage({ message: "请先粘贴 JSON 或选择文件", type: "warning", offset: 80 });
+    ElMessage({ message: "请先粘贴 value 或 {key, value}", type: "warning", offset: 80 });
     return;
   }
 
   loadingParse.value = true;
   try {
-    const { days: parsed, skipped } = parseRangeResponse(rawText.value);
+    const { days: parsed, skipped } = parseSingleDayResponse(rawText.value);
     if (!parsed.length) {
       throw new Error("没有解析到任何数据");
     }
@@ -262,65 +258,6 @@ const handleParse = async () => {
     });
   } finally {
     loadingParse.value = false;
-  }
-};
-
-// 通过 HTTP range_get 接口直接查询并解析 (与 IC数据维护-按日期范围查询历史数据 相同的请求体)
-const handleQueryFromServer = async () => {
-  if (!serverUrl.value.trim() || !rangeStart.value.trim() || !rangeEnd.value.trim()) {
-    ElMessage({ message: "请填写服务器地址和日期范围", type: "warning", offset: 80 });
-    return;
-  }
-
-  loadingQuery.value = true;
-  try {
-    const output = {
-      db_name: "history_data_list_datetime",
-      op_mode: "all",
-      operation: "range_get",
-      range_start: rangeStart.value,
-      range_end: rangeEnd.value,
-    };
-
-    const result = await window.api.httpPost(serverUrl.value, output);
-
-    if (result.success && result.data) {
-      rawText.value = JSON.stringify(result.data);
-      await handleParse();
-    } else {
-      ElMessage({
-        message: `查询失败: ${result.error || "未知错误"}`,
-        type: "error",
-        offset: 80,
-      });
-    }
-  } catch (error) {
-    ElMessage({
-      message: `查询失败: ${error instanceof Error ? error.message : error}`,
-      type: "error",
-      offset: 80,
-    });
-  } finally {
-    loadingQuery.value = false;
-  }
-};
-
-const handleSelectFile = async () => {
-  loadingFile.value = true;
-  try {
-    const result = await window.api.selectAndReadFile();
-    if (result.canceled) return;
-    if (result.error) throw new Error(result.error);
-    rawText.value = result.content ?? "";
-    await handleParse();
-  } catch (error) {
-    ElMessage({
-      message: `读取文件失败: ${error instanceof Error ? error.message : error}`,
-      type: "error",
-      offset: 80,
-    });
-  } finally {
-    loadingFile.value = false;
   }
 };
 
@@ -380,7 +317,7 @@ const handlePutServer = async () => {
     return;
   }
 
-  // 当天的所有数据都属于 value, 多条记录用 ; 拼接 (与 range_get 返回格式一致)
+  // 当天的所有数据都属于 value, 多条记录用 ; 拼接 (与 get 返回格式一致)
   const value = arr.map((r) => JSON.stringify(r)).join(";");
 
   putting.value = true;
@@ -458,30 +395,32 @@ const handlePutServer = async () => {
   gap: 12px;
 }
 
-.http-row {
+.btn-row {
+  margin-top: 12px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 12px;
+}
+
+.server-label {
+  color: #606266;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.server-row {
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .server-input {
   width: 220px;
 }
 
-.date-input {
-  width: 160px;
-}
-
 .date-select {
   width: 200px;
-}
-
-.btn-row {
-  margin-top: 12px;
-  display: flex;
-  gap: 12px;
 }
 
 .edit-textarea :deep(textarea) {

@@ -18,6 +18,9 @@
         <el-menu-item index="page4">
           <span>解析 Range 历史数据</span>
         </el-menu-item>
+        <el-menu-item index="page5">
+          <span>解析单天历史数据</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main class="tools-main">
@@ -25,6 +28,7 @@
       <ToolPage2 v-else-if="activeMenu === 'page2'" />
       <ToolPage3 v-else-if="activeMenu === 'page3'" />
       <ToolPage4 v-else-if="activeMenu === 'page4'" />
+      <ToolPage5 v-else-if="activeMenu === 'page5'" />
     </el-main>
   </el-container>
 </template>
@@ -35,6 +39,7 @@ import ToolPage1 from '@/components/checkLotDuplicate.vue'
 import ToolPage2 from '@/components/checkMongoDuplicate.vue'
 import ToolPage3 from '@/components/compareResults.vue'
 import ToolPage4 from '@/components/parseHistoryDataRange.vue'
+import ToolPage5 from '@/components/parseHistoryDataByKey.vue'
 
 const activeMenu = ref('page1')
 

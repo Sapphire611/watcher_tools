@@ -47,6 +47,7 @@ declare module 'vue' {
     GetHistoryDataRange: typeof import('./src/components/getHistoryDataRange.vue')['default']
     GetVrsHistoryResult: typeof import('./src/components/getVrsHistoryResult.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
+    ParseHistoryDataByKey: typeof import('./src/components/parseHistoryDataByKey.vue')['default']
     ParseHistoryDataRange: typeof import('./src/components/parseHistoryDataRange.vue')['default']
     ProductSerialManagement: typeof import('./src/components/ProductSerialManagement.vue')['default']
     PutHistoryData: typeof import('./src/components/putHistoryData.vue')['default']
