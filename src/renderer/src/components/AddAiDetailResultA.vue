@@ -38,7 +38,7 @@
             v-model="store.value"
             type="textarea"
             :rows="10"
-            placeholder='例如: [{"pcs_index":2,"index":0,"ai_label":"NG","defect_code":"SM10","infer_detail":{}}]'
+            placeholder='例如: [{"pcs_index":2,"index":0,"ai_label":"NG","defect_code":"SM10","mes_code":"4101","auto_mark":true,"infer_detail":{}}]'
             clearable
           />
         </el-form-item>
@@ -80,7 +80,7 @@ const exampleCode = `{
   "operation": "put",
   "op_mode": "all_ow",
   "key": "261F90170800 2105_A",
-  "value": [{"pcs_index":2,"index":0,"ai_label":"NG","defect_code":"SM10","infer_detail":{}},{"pcs_index":2,"index":1,"ai_label":"NG","defect_code":"SM94","infer_detail":{}},{"pcs_index":109,"index":0,"ai_label":"NG","defect_code":"GE57","infer_detail":{}}]
+  "value": [{"pcs_index":2,"index":0,"ai_label":"NG","defect_code":"SM10","mes_code":"4101","auto_mark":true,"infer_detail":{}},{"pcs_index":2,"index":1,"ai_label":"NG","defect_code":"SM94","mes_code":"4102","auto_mark":false,"infer_detail":{}},{"pcs_index":109,"index":0,"ai_label":"NG","defect_code":"GE57","mes_code":"4103","auto_mark":true,"infer_detail":{}}]
 }`
 
 // 复制示例代码
