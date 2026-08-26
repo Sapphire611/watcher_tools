@@ -95,6 +95,49 @@ export const useAddSnStore = defineStore('addSn', () => {
   }
 })
 
+// ==================== 添加SN（新版minio版本） ====================
+export const useAddSnMinioStore = defineStore('addSnMinio', () => {
+  const sn = ref('')
+  const minioBase = ref('C:/Users/liuliyi/.local/bin/minio-new-data/deepiresults')
+  const sideAJson = ref('')
+  const sideAZip = ref('')
+  const sideBJson = ref('')
+  const sideBZip = ref('')
+  const machineName = ref('')
+  const serverUrl = ref('http://localhost:9877')
+  const responseResult = ref('')
+
+  function setResponseResult(result: string) {
+    responseResult.value = result
+  }
+
+  function clear() {
+    sn.value = ''
+    minioBase.value = 'C:/Users/liuliyi/.local/bin/minio-new-data/deepiresults'
+    sideAJson.value = ''
+    sideAZip.value = ''
+    sideBJson.value = ''
+    sideBZip.value = ''
+    machineName.value = ''
+    serverUrl.value = 'http://localhost:9877'
+    responseResult.value = ''
+  }
+
+  return {
+    sn,
+    minioBase,
+    sideAJson,
+    sideAZip,
+    sideBJson,
+    sideBZip,
+    machineName,
+    serverUrl,
+    responseResult,
+    setResponseResult,
+    clear
+  }
+})
+
 // ==================== 删除SN ====================
 export const useDeleteSnStore = defineStore('deleteSn', () => {
   const sn = ref('')

@@ -6,6 +6,7 @@ import { register as httpPost } from './network/http-post'
 import { register as checkTcpPort } from './network/check-tcp-port'
 import { register as checkMinioBucket } from './network/check-minio-bucket'
 import { register as getMinioConfig } from './minio/get-minio-config'
+import { register as addSnNewMinio } from './minio/add-sn-new-minio'
 import { register as getAppConfigPath } from './config/get-app-config-path'
 import { register as openConfigFolder } from './config/open-config-folder'
 import { register as getPresetConfigs } from './config/get-preset-configs'
@@ -28,6 +29,7 @@ export function createIPCHandlers(): void {
   checkMinioBucket()
   // minio
   getMinioConfig()
+  addSnNewMinio()
   // config
   getAppConfigPath()
   openConfigFolder()

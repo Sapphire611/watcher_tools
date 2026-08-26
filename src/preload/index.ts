@@ -10,6 +10,8 @@ const api = {
   checkMinioBucket: (endpoint: string, accessKey: string, secretKey: string, bucketName: string) =>
     ipcRenderer.invoke('check-minio-bucket', endpoint, accessKey, secretKey, bucketName),
   getMinioConfig: (bucketName: string) => ipcRenderer.invoke('get-minio-config', bucketName),
+  selectFilePath: () => ipcRenderer.invoke('select-file-path'),
+  addSnNewMinio: (payload: any) => ipcRenderer.invoke('add-sn-new-minio', payload),
   getAppConfigPath: () => ipcRenderer.invoke('get-app-config-path'),
   openConfigFolder: () => ipcRenderer.invoke('open-config-folder'),
   uploadProductSerial: () => ipcRenderer.invoke('upload-product-serial'),

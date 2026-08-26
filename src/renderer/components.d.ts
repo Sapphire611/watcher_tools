@@ -13,6 +13,7 @@ declare module 'vue' {
     AddAiInferenceResultB: typeof import('./src/components/addAiInferenceResultB.vue')['default']
     AddLot: typeof import('./src/components/AddLot.vue')['default']
     AddSN: typeof import('./src/components/AddSN.vue')['default']
+    AddSNMinio: typeof import('./src/components/AddSNMinio.vue')['default']
     CheckLotDuplicate: typeof import('./src/components/checkLotDuplicate.vue')['default']
     CheckMongoDuplicate: typeof import('./src/components/checkMongoDuplicate.vue')['default']
     CompareResults: typeof import('./src/components/compareResults.vue')['default']

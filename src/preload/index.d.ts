@@ -79,6 +79,22 @@ declare global {
         content?: string
         error?: string
       }>
+      selectFilePath: () => Promise<{
+        canceled: boolean
+        filePath?: string
+        error?: string
+      }>
+      addSnNewMinio: (payload: {
+        sn: string
+        minioBase: string
+        sideA: { jsonPath: string; zipPath: string }
+        sideB: { jsonPath: string; zipPath: string }
+      }) => Promise<{
+        success: boolean
+        logs?: string[]
+        minioUrls?: { A: string; B: string }
+        error?: string
+      }>
     }
   }
 }

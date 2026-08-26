@@ -15,6 +15,9 @@
         <el-menu-item index="demo2">
           <span>添加SN</span>
         </el-menu-item>
+        <el-menu-item index="page13">
+          <span>添加SN（新版minio版本）</span>
+        </el-menu-item>
         <el-menu-item index="demo5">
           <span>删除SN</span>
         </el-menu-item>
@@ -66,6 +69,7 @@
       <QuerySN v-if="activeMenu === 'demo1'" />
       <ProductSerialManagement v-else-if="activeMenu === 'page6'" />
       <AddSN v-else-if="activeMenu === 'demo2'" />
+      <AddSNMinio v-else-if="activeMenu === 'page13'" />
       <QueryLot v-else-if="activeMenu === 'demo3'" />
       <AddLot v-else-if="activeMenu === 'demo4'" />
       <DeleteSN v-else-if="activeMenu === 'demo5'" />
@@ -88,6 +92,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AddSN from '@/components/AddSN.vue'
+import AddSNMinio from '@/components/AddSNMinio.vue'
 import AddLot from '@/components/AddLot.vue'
 import QuerySN from '@/components/QuerySN.vue'
 import QueryLot from '@/components/QueryLot.vue'
