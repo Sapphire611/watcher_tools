@@ -8,6 +8,7 @@ dist/
 dist-electron/
 release/
 out/
+*.tsbuildinfo
 
 # 调试日志
 npm-debug.log*
