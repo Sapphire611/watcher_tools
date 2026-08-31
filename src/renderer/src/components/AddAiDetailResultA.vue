@@ -4,6 +4,28 @@
 
     添加 AI 过滤后的 A 面详细结果数据 (tovrs)
 
+    <el-card class="file-card">
+      <template #header>
+        <div class="card-header">
+          <span>选择查询响应文件直接添加</span>
+          <el-button type="primary" @click="handleFileAdd" :loading="loading">
+            解析并添加
+          </el-button>
+        </div>
+      </template>
+      <div class="file-row">
+        <el-button @click="triggerFileSelect">选择文件</el-button>
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept=".txt,.json"
+          style="display: none"
+          @change="handleFileChange"
+        />
+        <span class="file-name">{{ fileName || '未选择文件' }}</span>
+      </div>
+    </el-card>
+
     <el-card class="code-card">
       <template #header>
         <div class="card-header">
@@ -73,6 +95,112 @@ import { useAddAiDetailResultAStore } from '../stores/dataMaintenance'
 
 const store = useAddAiDetailResultAStore()
 const loading = ref(false)
+
+// 选择的响应文件
+const fileName = ref('')
+const fileContent = ref('')
+const fileInputRef = ref<HTMLInputElement>()
+
+// 点击按钮弹出文件选择窗口
+const triggerFileSelect = () => {
+  fileInputRef.value?.click()
+}
+
+// 选择查询响应文件 (get 接口返回的 {key, value} JSON)
+const handleFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  fileName.value = file.name
+  const reader = new FileReader()
+  reader.onload = () => {
+    fileContent.value = String(reader.result || '').trim()
+    if (!fileContent.value) {
+      ElMessage({
+        message: '文件内容为空',
+        type: 'warning',
+        offset: 80,
+      })
+    }
+  }
+  reader.readAsText(file)
+  // 重置 input, 保证再次选择同一文件也能触发 change
+  input.value = ''
+}
+
+// 解析响应并直接添加
+const handleFileAdd = async () => {
+  if (!fileContent.value) {
+    ElMessage({
+      message: '请先选择响应文件',
+      type: 'warning',
+      offset: 80,
+    })
+    return
+  }
+
+  if (!parseResponse(fileContent.value)) return
+
+  ElMessage({
+    message: '解析成功, 正在添加...',
+    type: 'success',
+    offset: 80,
+  })
+  await handleSubmit()
+}
+
+// 解析响应内容并填充表单, 返回是否解析出完整的 key/value
+const parseResponse = (text: string): boolean => {
+  let parsed: any
+  try {
+    parsed = JSON.parse(text)
+  } catch (error) {
+    console.error('解析响应失败:', error)
+    ElMessage({
+      message: '解析失败: 文件内容不是合法 JSON',
+      type: 'error',
+      offset: 80,
+    })
+    return false
+  }
+
+  if (!parsed || typeof parsed !== 'object') {
+    ElMessage({
+      message: '解析失败: 响应中没有找到有效记录',
+      type: 'error',
+      offset: 80,
+    })
+    return false
+  }
+
+  // 解除 stringify: value 为字符串时解析成实际的数组/对象
+  let valueText = ''
+  if (typeof parsed.value === 'string') {
+    try {
+      valueText = JSON.stringify(JSON.parse(parsed.value))
+    } catch {
+      valueText = parsed.value.trim()
+    }
+  } else if (parsed.value !== undefined) {
+    valueText = JSON.stringify(parsed.value)
+  }
+
+  if (parsed.key !== undefined) store.setKey(String(parsed.key))
+  if (valueText) store.setValue(valueText)
+
+  const missing: string[] = []
+  if (parsed.key === undefined) missing.push('key')
+  if (!valueText) missing.push('value')
+  if (missing.length) {
+    ElMessage({
+      message: `响应中缺少 ${missing.join('、')}, 已填充现有字段`,
+      type: 'warning',
+      offset: 80,
+    })
+    return false
+  }
+  return true
+}
 
 // 示例源代码
 const exampleCode = `{
@@ -172,6 +300,23 @@ const handleReset = () => {
   margin-top: 20px;
   margin-bottom: 20px;
   max-width: 800px;
+}
+
+.file-card {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  max-width: 800px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-name {
+  color: #666;
+  font-size: 13px;
 }
 
 .code-content {
