@@ -113,6 +113,7 @@ declare global {
         mappingBase: string
         serverUrl: string
         submitKv: boolean
+        localMinioUrl?: string
       }) => Promise<{
         success: boolean
         logs?: { type: string; msg: string }[]

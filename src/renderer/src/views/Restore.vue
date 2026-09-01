@@ -34,6 +34,11 @@
           <el-input v-model="serverUrl" clearable />
         </el-form-item>
 
+        <el-form-item label="本地 minio 地址">
+          <el-input v-model="localMinioUrl" clearable placeholder="http://127.0.0.1:9102" />
+          <div class="form-tip">还原时把 panel.json 内的图片 URL（现场机台 IP）改写为该地址</div>
+        </el-form-item>
+
         <el-form-item>
           <el-checkbox v-model="submitKv">提交 KV 数据（AI 结果 / SN / lot）</el-checkbox>
         </el-form-item>
@@ -136,6 +141,7 @@ const productBase = ref('')
 const minioBase = ref('C:/minio/deepiresults')
 const mappingBase = ref('')
 const serverUrl = ref('http://localhost:9877')
+const localMinioUrl = ref('http://127.0.0.1:9102')
 const submitKv = ref(true)
 const loading = ref(false)
 const logs = ref<LogItem[]>([])
@@ -237,6 +243,7 @@ const handleRestore = async () => {
       mappingBase: mappingBase.value,
       serverUrl: serverUrl.value,
       submitKv: submitKv.value,
+      localMinioUrl: localMinioUrl.value,
     })
     logs.value = res.logs || []
     if (res.success) {
@@ -292,6 +299,13 @@ const handleReset = () => {
 
 .browse-btn {
   margin-left: 10px;
+}
+
+.form-tip {
+  font-size: 12px;
+  color: #909399;
+  line-height: 1.5;
+  width: 100%;
 }
 
 .http-card {

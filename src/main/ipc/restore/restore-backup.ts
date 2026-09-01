@@ -20,6 +20,7 @@ interface RestorePayload {
   mappingBase?: string
   serverUrl?: string
   submitKv?: boolean
+  localMinioUrl?: string
 }
 
 type LogType = 'step' | 'ok' | 'warn' | 'err' | 'info'
@@ -44,10 +45,92 @@ interface BackupContext {
   sideMeta: Partial<Record<'A' | 'B', SideMeta>>
 }
 
-const SIDE_JSONS: Array<[string, 'A' | 'B']> = [
-  ['fpcV2origindata_A_127.0.0.1_last.json', 'A'],
-  ['fpcV2origindata_B_127.0.0.1_last.json', 'B'],
-]
+/**
+ * 查找 A/B 面的 fpcV2origindata 文件
+ * 命名规则: fpcV2origindata_{A|B}_{机台名}_{计数}.json (机台名不固定, 如 127.0.0.1)
+ * 优先 _last.json (正常复判快照), 其次取任意同名文件
+ */
+async function findSideJson(backupRoot: string, side: 'A' | 'B'): Promise<string | null> {
+  const entries = await fs.readdir(backupRoot).catch(() => [])
+  const prefix = `fpcV2origindata_${side}_`
+  const matches = entries.filter((f) => f.startsWith(prefix) && f.endsWith('.json'))
+  if (!matches.length) return null
+  return matches.find((f) => f.endsWith('_last.json')) || matches[0]
+}
+
+/**
+ * 递归改写 json 中指向现场 minio 的完整图片 URL 为本地地址
+ * 例: http://10.14.31.109:9102/deepiresults/... → http://127.0.0.1:9102/deepiresults/...
+ * 返回改写次数
+ */
+function rewriteMinioUrls(value: unknown, localPrefix: string, count: { n: number }): unknown {
+  if (typeof value === 'string') {
+    const m = value.match(/^(https?:\/\/)([^/]+)\/(deepiresults\/.*)$/)
+    if (m) {
+      const rewritten = `${localPrefix}/${m[3]}`
+      if (rewritten !== value) count.n++
+      return rewritten
+    }
+    return value
+  }
+  if (Array.isArray(value)) return value.map((v) => rewriteMinioUrls(v, localPrefix, count))
+  if (value && typeof value === 'object') {
+    for (const k of Object.keys(value)) {
+      value[k] = rewriteMinioUrls(value[k], localPrefix, count)
+    }
+    return value
+  }
+  return value
+}
+
+/**
+ * 计算 A/B 面在 minio 中的相对目录 (含全部中间层级, 如 日期/产品/SN/A_<pt>)
+ * 以备份内图片目录的镜像层级为准 (与 json 内图片 URL 路径一致), 找不到图片时回退 产品/SN/A_<pt>
+ */
+async function deriveMinioRelDir(
+  backupRoot: string,
+  side: 'A' | 'B',
+  meta: SideMeta,
+  sn: string
+): Promise<string> {
+  const imgRoot = path.join(backupRoot, 'img', 'deepiresults')
+  const found = await findImgSideDir(imgRoot, side, meta.process_time)
+  if (found) return path.relative(imgRoot, found).replace(/\\/g, '/')
+  return path.join(meta.product_serial, sn, `${side}_${meta.process_time}`).replace(/\\/g, '/')
+}
+
+/**
+ * 在 imgRoot 下递归查找 <side>_<processTime> 目录 (容忍日期等中间层级, 如 deepiresults/20260901/<产品>/<SN>/A_...)
+ */
+async function findImgSideDir(
+  imgRoot: string,
+  side: string,
+  processTime: string
+): Promise<string | null> {
+  const target = `${side}_${processTime}`
+  const queue = [imgRoot]
+  while (queue.length) {
+    const dir = queue.pop()!
+    const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
+    for (const e of entries) {
+      if (!e.isDirectory()) continue
+      const p = path.join(dir, e.name)
+      if (e.name === target) return p
+      queue.push(p)
+    }
+  }
+  return null
+}
+
+/** 返回 A/B 面 fpcV2origindata 文件对 [文件名, 面] */
+async function findSideJsonFiles(backupRoot: string): Promise<Array<[string, 'A' | 'B']>> {
+  const pairs: Array<[string, 'A' | 'B']> = []
+  for (const side of ['A', 'B'] as const) {
+    const name = await findSideJson(backupRoot, side)
+    if (name) pairs.push([name, side])
+  }
+  return pairs
+}
 
 /** 递归查找包含 asideInfer.json 的备份根目录 (最多 3 层) */
 async function findRoot(dir: string, logs: LogItem[]): Promise<string> {
@@ -105,7 +188,7 @@ async function readBackupMeta(backupRoot: string, logs: LogItem[]): Promise<Back
   }
 
   const sideMeta: Partial<Record<'A' | 'B', SideMeta>> = {}
-  for (const [jname, side] of SIDE_JSONS) {
+  for (const [jname, side] of await findSideJsonFiles(backupRoot)) {
     const jpath = path.join(backupRoot, jname)
     if (!existsSync(jpath)) continue
     const data = JSON.parse(await fs.readFile(jpath, 'utf8'))
@@ -158,12 +241,13 @@ async function buildKvRequests(
 
   // SN → AVI_results_db
   const sideInfos: Record<string, string> = {}
-  for (const [_jname, side] of SIDE_JSONS) {
+  for (const [_jname, side] of await findSideJsonFiles(backupRoot)) {
     const meta = sideMeta[side]
     if (!meta) continue
     const pt = meta.process_time
     const describeName = meta.describe_path || `${side}_${pt}-panel.json`
-    sideInfos[side] = `${basePath}/${meta.product_serial}/${sn}/${side}_${pt}/${describeName}`
+    const minioRelDir = await deriveMinioRelDir(backupRoot, side, meta, sn)
+    sideInfos[side] = `${basePath}/${minioRelDir}/${describeName}`
   }
   if (Object.keys(sideInfos).length) {
     kv.push({
@@ -277,6 +361,7 @@ export function register(): void {
       const mappingBase = (payload?.mappingBase || '').trim().replace(/\/+$/, '')
       const serverUrl = (payload?.serverUrl || 'http://localhost:9877').trim()
       const submitKv = payload?.submitKv !== false
+      const localMinioUrl = (payload?.localMinioUrl || 'http://127.0.0.1:9102').trim().replace(/\/+$/, '')
       if (!productBase || !minioBase || !mappingBase) {
         throw new Error('料号/图片/前道文件基准路径不能为空')
       }
@@ -311,10 +396,10 @@ export function register(): void {
         warn('备份中无 product 目录, 跳过')
       }
 
-      // 4. panel.json + 缺陷图片 → minio
+      // 4. panel.json + 缺陷图片 → minio (目录层级以备份图片镜像为准, 与 json 内 URL 路径一致)
       step('还原 panel.json 与缺陷图片到 minio')
       const imgRoot = path.join(backupRoot, 'img', 'deepiresults')
-      for (const [jname, side] of SIDE_JSONS) {
+      for (const [jname, side] of await findSideJsonFiles(backupRoot)) {
         const jpath = path.join(backupRoot, jname)
         const meta = ctx.sideMeta[side]
         if (!existsSync(jpath) || !meta) {
@@ -323,13 +408,18 @@ export function register(): void {
         }
         const pt = meta.process_time
         const describeName = meta.describe_path || `${side}_${pt}-panel.json`
-        const sideDir = `${side}_${pt}`
-        const targetDir = path.join(minioBase, meta.product_serial, sn, sideDir)
+        const minioRelDir = await deriveMinioRelDir(backupRoot, side, meta, sn)
+        const targetDir = path.join(minioBase, minioRelDir)
         await fs.mkdir(targetDir, { recursive: true })
-        await fs.copyFile(jpath, path.join(targetDir, describeName))
-        ok(`${jname} → ${targetDir}\\${describeName}`)
+        // 改写 json 内图片 URL: 现场机台 IP → 本地 minio 地址
+        const data = JSON.parse(await fs.readFile(jpath, 'utf8'))
+        const count = { n: 0 }
+        rewriteMinioUrls(data, localMinioUrl, count)
+        await fs.writeFile(path.join(targetDir, describeName), JSON.stringify(data))
+        const rewritten = count.n ? ` (改写图片 URL ${count.n} 处 → ${localMinioUrl})` : ''
+        ok(`${jname} → ${targetDir}\\${describeName}${rewritten}`)
 
-        const imgSideDir = path.join(imgRoot, meta.product_serial, sn, sideDir)
+        const imgSideDir = path.join(imgRoot, minioRelDir)
         if (existsSync(imgSideDir)) {
           await fs.cp(imgSideDir, targetDir, { recursive: true, force: true })
           const cnt = (await fs.readdir(targetDir, { recursive: true })).length
