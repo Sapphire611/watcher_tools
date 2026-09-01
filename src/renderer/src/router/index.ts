@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
     name: "Settings",
     component: () => import("@/views/Settings.vue"),
   },
+  {
+    path: "/restore",
+    name: "Restore",
+    component: () => import("@/views/Restore.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -9,6 +9,7 @@
       >
         <el-menu-item index="/home">首页</el-menu-item>
         <el-menu-item index="/data">IC数据维护</el-menu-item>
+        <el-menu-item index="/restore">备份还原</el-menu-item>
         <el-menu-item index="/settings">本地设置</el-menu-item>
         <el-menu-item index="/tools">其他工具</el-menu-item>
       </el-menu>

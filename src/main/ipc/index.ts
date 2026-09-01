@@ -16,6 +16,7 @@ import { register as switchConfigFolder } from './config/switch-config-folder'
 import { register as uploadProductSerial } from './product/upload-product-serial'
 import { register as getMesTypes } from './mes/get-mes-types'
 import { register as applyMesType } from './mes/apply-mes-type'
+import { register as restoreBackup } from './restore/restore-backup'
 
 export function createIPCHandlers(): void {
   // system
@@ -42,4 +43,6 @@ export function createIPCHandlers(): void {
   // mes
   getMesTypes()
   applyMesType()
+  // restore
+  restoreBackup()
 }

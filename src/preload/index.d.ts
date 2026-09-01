@@ -95,6 +95,46 @@ declare global {
         minioUrls?: { A: string; B: string }
         error?: string
       }>
+      getHomeDir: () => Promise<{ homeDir: string }>
+      selectRestoreSource: () => Promise<{
+        canceled: boolean
+        path?: string
+        error?: string
+      }>
+      selectDirPath: () => Promise<{
+        canceled: boolean
+        path?: string
+        error?: string
+      }>
+      restoreBackup: (payload: {
+        sourcePath: string
+        productBase: string
+        minioBase: string
+        mappingBase: string
+        serverUrl: string
+        submitKv: boolean
+      }) => Promise<{
+        success: boolean
+        logs?: { type: string; msg: string }[]
+        error?: string
+      }>
+      previewRestoreKv: (payload: {
+        sourcePath: string
+        minioBase: string
+      }) => Promise<{
+        success: boolean
+        logs?: { type: string; msg: string }[]
+        sn?: string
+        kv?: {
+          db_name: string
+          operation: string
+          op_mode: string
+          key: string
+          value: string
+        }[]
+        inferFiles?: { fname: string; side: string; dbName: string; count: number }[]
+        error?: string
+      }>
     }
   }
 }

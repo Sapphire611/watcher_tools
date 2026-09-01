@@ -21,7 +21,12 @@ const api = {
   switchConfigFolder: (folderName: string, backupName?: string) => ipcRenderer.invoke('switch-config-folder', folderName, backupName),
   getMesTypes: () => ipcRenderer.invoke('get-mes-types'),
   applyMesType: (mesType: string) => ipcRenderer.invoke('apply-mes-type', mesType),
-  selectAndReadFile: () => ipcRenderer.invoke('select-and-read-file')
+  selectAndReadFile: () => ipcRenderer.invoke('select-and-read-file'),
+  getHomeDir: () => ipcRenderer.invoke('get-home-dir'),
+  selectRestoreSource: () => ipcRenderer.invoke('select-restore-source'),
+  selectDirPath: () => ipcRenderer.invoke('select-dir-path'),
+  previewRestoreKv: (payload: any) => ipcRenderer.invoke('preview-restore-kv', payload),
+  restoreBackup: (payload: any) => ipcRenderer.invoke('restore-backup', payload)
 }
 
 // 在 window 对象上暴露受保护的方法
