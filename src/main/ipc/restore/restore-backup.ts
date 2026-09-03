@@ -1,8 +1,11 @@
 import { ipcMain } from 'electron'
-import { execFileSync } from 'child_process'
+import { execFile } from 'child_process'
+import { promisify } from 'util'
 import { promises as fs, existsSync } from 'fs'
 import os from 'os'
 import path from 'path'
+
+const execFileAsync = promisify(execFile)
 
 interface SideMeta {
   product_serial: string
@@ -11,6 +14,10 @@ interface SideMeta {
   describe_path: string
   machine_name: string
   lot_id: string
+  // json 中记录的面板本地存放路径 (用于在备份内定位图片镜像目录)
+  local_describe_dir: string
+  local_describe_path: string
+  archive_path: string
 }
 
 interface RestorePayload {
@@ -59,65 +66,117 @@ async function findSideJson(backupRoot: string, side: 'A' | 'B'): Promise<string
 }
 
 /**
- * 递归改写 json 中指向现场 minio 的完整图片 URL 为本地地址
- * 例: http://10.14.31.109:9102/deepiresults/... → http://127.0.0.1:9102/deepiresults/...
+ * 递归改写 json 中指向现场 minio 的图片 URL 为本地地址
+ * 1) 命中该面面板目录前缀 (如 deepiresults/20260901/机台名/A/…/describe目录) →
+ *    整体改写为本地两层目录 deepiresults/<SN>/<A|B>, 保证 URL 与实际拷贝位置一致
+ * 2) 其余 deepiresults URL 仅改写主机地址 (现场机台 IP → localPrefix)
  * 返回改写次数
  */
-function rewriteMinioUrls(value: unknown, localPrefix: string, count: { n: number }): unknown {
+function rewriteMinioUrls(
+  value: unknown,
+  localPrefix: string,
+  fromRel: string | null,
+  toRel: string,
+  count: { n: number }
+): unknown {
   if (typeof value === 'string') {
-    const m = value.match(/^(https?:\/\/)([^/]+)\/(deepiresults\/.*)$/)
+    const m = value.match(/^(https?:\/\/[^/]+)\/(deepiresults\/)(.*)$/)
     if (m) {
-      const rewritten = `${localPrefix}/${m[3]}`
+      const host = m[1]
+      const relPath = m[3] // 相对 deepiresults/ 的路径
+      let newPath: string | null = null
+      if (fromRel) {
+        const from = fromRel.replace(/\\/g, '/').replace(/\/+$/, '')
+        if (relPath.toLowerCase().startsWith(from.toLowerCase() + '/')) {
+          newPath = `${toRel}${relPath.slice(from.length)}`
+        } else if (relPath.toLowerCase() === from.toLowerCase()) {
+          newPath = toRel
+        }
+      }
+      const rewritten = `${localPrefix}/deepiresults/${newPath ?? relPath}`
       if (rewritten !== value) count.n++
       return rewritten
     }
     return value
   }
-  if (Array.isArray(value)) return value.map((v) => rewriteMinioUrls(v, localPrefix, count))
+  if (Array.isArray(value)) return value.map((v) => rewriteMinioUrls(v, localPrefix, fromRel, toRel, count))
   if (value && typeof value === 'object') {
     for (const k of Object.keys(value)) {
-      value[k] = rewriteMinioUrls(value[k], localPrefix, count)
+      value[k] = rewriteMinioUrls(value[k], localPrefix, fromRel, toRel, count)
     }
     return value
   }
   return value
 }
 
-/**
- * 计算 A/B 面在 minio 中的相对目录 (含全部中间层级, 如 日期/产品/SN/A_<pt>)
- * 以备份内图片目录的镜像层级为准 (与 json 内图片 URL 路径一致), 找不到图片时回退 产品/SN/A_<pt>
- */
-async function deriveMinioRelDir(
-  backupRoot: string,
-  side: 'A' | 'B',
-  meta: SideMeta,
-  sn: string
-): Promise<string> {
-  const imgRoot = path.join(backupRoot, 'img', 'deepiresults')
-  const found = await findImgSideDir(imgRoot, side, meta.process_time)
-  if (found) return path.relative(imgRoot, found).replace(/\\/g, '/')
-  return path.join(meta.product_serial, sn, `${side}_${meta.process_time}`).replace(/\\/g, '/')
+/** panel.json 在 A/B 目录内的文件名 */
+function describeFileName(meta: SideMeta, side: 'A' | 'B'): string {
+  return meta.describe_path || `${side}_${meta.process_time}-panel.json`
+}
+
+/** 还原后保存到 minio 基础路径的相对目录: 仅两层  SN/A、SN/B */
+function minioRelDir(sn: string, side: 'A' | 'B'): string {
+  return `${sn}/${side}`
 }
 
 /**
- * 在 imgRoot 下递归查找 <side>_<processTime> 目录 (容忍日期等中间层级, 如 deepiresults/20260901/<产品>/<SN>/A_...)
+ * 从 fpc json 记录的面板本地路径字段解析其在 deepiresults 下的相对目录
+ * (local_describe_dir / local_describe_path / archive_path, 容忍 \\ 与结尾文件名)
  */
-async function findImgSideDir(
-  imgRoot: string,
-  side: string,
-  processTime: string
-): Promise<string | null> {
-  const target = `${side}_${processTime}`
-  const queue = [imgRoot]
+function describeRelFromFields(meta: SideMeta): string | null {
+  for (const field of [meta.local_describe_dir, meta.local_describe_path, meta.archive_path]) {
+    if (!field) continue
+    const norm = field.replace(/\\/g, '/')
+    const idx = norm.toLowerCase().indexOf('deepiresults/')
+    if (idx < 0) continue
+    let tail = norm.slice(idx + 'deepiresults/'.length).replace(/\/+$/, '')
+    const file = tail.match(/^(.*)\/([^/]+)$/)
+    if (file && /\.(json|zip)$/i.test(file[2])) tail = file[1]
+    if (tail) return tail
+  }
+  return null
+}
+
+/** BFS 递归查找目录名称为 leaf 的目录 (parentLeaf 限定其父级目录名, 传空则任意层级) */
+async function findDirByLeaf(root: string, leaf: string, parentLeaf?: string): Promise<string | null> {
+  const queue: string[] = [root]
   while (queue.length) {
-    const dir = queue.pop()!
+    const dir = queue.shift()!
     const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
     for (const e of entries) {
       if (!e.isDirectory()) continue
-      const p = path.join(dir, e.name)
-      if (e.name === target) return p
-      queue.push(p)
+      const child = path.join(dir, e.name)
+      if (e.name === leaf && (!parentLeaf || path.basename(dir) === parentLeaf)) return child
+      queue.push(child)
     }
+  }
+  return null
+}
+
+/**
+ * 在备份 img/deepiresults 镜像下定位该面缺陷图片所在目录 (兼容动态机台名与目录层级):
+ * 1) json 记录的面板目录 (与现场 minio 层级一致, 最可靠)
+ * 2) 名为 <side>_<process_time> 的目录
+ * 3) 与 describe 文件名前缀同名的目录 (其父级目录名为 A/B)
+ * 返回 { src: 绝对目录, rel: 相对 deepiresults 的旧前缀 } (用于改写 json 内 URL)
+ */
+async function findSideImgDir(
+  imgRoot: string,
+  side: 'A' | 'B',
+  meta: SideMeta
+): Promise<{ src: string; rel: string } | null> {
+  if (!existsSync(imgRoot)) return null
+  const rel = describeRelFromFields(meta)
+  if (rel) {
+    const p = path.join(imgRoot, ...rel.split('/'))
+    if (existsSync(p)) return { src: p, rel }
+  }
+  const bySidePt = await findDirByLeaf(imgRoot, `${side}_${meta.process_time}`)
+  if (bySidePt) return { src: bySidePt, rel: path.relative(imgRoot, bySidePt).replace(/\\/g, '/') }
+  const stem = (meta.describe_path || '').replace(/-panel\.json$/i, '')
+  if (stem && stem !== meta.describe_path) {
+    const byStem = await findDirByLeaf(imgRoot, stem, side)
+    if (byStem) return { src: byStem, rel: path.relative(imgRoot, byStem).replace(/\\/g, '/') }
   }
   return null
 }
@@ -150,26 +209,47 @@ async function findRoot(dir: string, logs: LogItem[]): Promise<string> {
   return dir
 }
 
-/** 解压 (zip) 并定位备份根目录, 返回根目录与临时目录 (无 zip 时 tempDir=null) */
+/**
+ * 解压 zip 到其同级目录 (不用系统 Temp)。优先 Windows 自带 bsdtar
+ * (System32\tar.exe, 比 PowerShell Expand-Archive 快一个量级, 避免长时间无响应),
+ * 失败或缺席时回退 Expand-Archive。
+ */
+async function extractZip(zipPath: string, destDir: string, logs: LogItem[]): Promise<void> {
+  const systemTar = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe')
+  if (existsSync(systemTar)) {
+    try {
+      await execFileAsync(systemTar, ['-xf', zipPath, '-C', destDir], { windowsHide: true })
+      return
+    } catch (e) {
+      logs.push({
+        type: 'warn',
+        msg: `tar 解压失败 (${e instanceof Error ? e.message : String(e)}), 改用 PowerShell Expand-Archive`,
+      })
+    }
+  }
+  await execFileAsync(
+    'powershell',
+    [
+      '-NoProfile',
+      '-Command',
+      `Expand-Archive -LiteralPath '${zipPath.replace(/'/g, "''")}' -DestinationPath '${destDir.replace(/'/g, "''")}' -Force`,
+    ],
+    { windowsHide: true }
+  )
+}
+
+/** 解压 (zip) 并定位备份根目录, 返回根目录与解压目录 (无 zip 时 tempDir=null) */
 async function resolveSource(sourcePath: string, logs: LogItem[]): Promise<{ backupRoot: string; tempDir: string | null }> {
   let rootDir = sourcePath
   let tempDir: string | null = null
   if (sourcePath.toLowerCase().endsWith('.zip')) {
-    tempDir = path.join(os.tmpdir(), `restore-backup-${Date.now()}`)
-    logs.push({ type: 'step', msg: `解压 ${path.basename(sourcePath)} → ${tempDir}` })
-    try {
-      execFileSync(
-        'powershell',
-        [
-          '-NoProfile',
-          '-Command',
-          `Expand-Archive -Path '${sourcePath.replace(/'/g, "''")}' -DestinationPath '${tempDir.replace(/'/g, "''")}' -Force`,
-        ],
-        { stdio: 'pipe' }
-      )
-    } catch (e) {
-      throw new Error(`解压失败: ${e instanceof Error ? e.message : String(e)}`)
-    }
+    // 解压到压缩包同级目录: 目录直观可查, 也规避系统 Temp 的权限/同步问题
+    const base = path.basename(sourcePath, path.extname(sourcePath))
+    tempDir = path.join(path.dirname(sourcePath), `${base}-restore-${Date.now()}`)
+    logs.push({ type: 'step', msg: `解压 ${path.basename(sourcePath)} → ${tempDir} (压缩包同级目录)` })
+    await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
+    await fs.mkdir(tempDir, { recursive: true })
+    await extractZip(sourcePath, tempDir, logs)
     rootDir = tempDir
   }
   const backupRoot = await findRoot(rootDir, logs)
@@ -199,6 +279,9 @@ async function readBackupMeta(backupRoot: string, logs: LogItem[]): Promise<Back
       describe_path: data.describe_path,
       machine_name: data.machine_name,
       lot_id: data.lot_id,
+      local_describe_dir: data.local_describe_dir || '',
+      local_describe_path: data.local_describe_path || '',
+      archive_path: data.archive_path || '',
     }
   }
   const sn = sideMeta.A?.serial_number || sideMeta.B?.serial_number || snTxt
@@ -239,15 +322,12 @@ async function buildKvRequests(
     inferFiles.push({ fname, side, dbName, count: parsed.length })
   }
 
-  // SN → AVI_results_db
+  // SN → AVI_results_db (panel.json 位置 = 基础路径/SN/A|B/描述文件)
   const sideInfos: Record<string, string> = {}
   for (const [_jname, side] of await findSideJsonFiles(backupRoot)) {
     const meta = sideMeta[side]
     if (!meta) continue
-    const pt = meta.process_time
-    const describeName = meta.describe_path || `${side}_${pt}-panel.json`
-    const minioRelDir = await deriveMinioRelDir(backupRoot, side, meta, sn)
-    sideInfos[side] = `${basePath}/${minioRelDir}/${describeName}`
+    sideInfos[side] = `${basePath}/${minioRelDir(sn, side)}/${describeFileName(meta, side)}`
   }
   if (Object.keys(sideInfos).length) {
     kv.push({
@@ -324,33 +404,56 @@ export function register(): void {
   // 预览: 解析备份并返回将要提交的 KV 请求 (不执行任何写入/网络请求)
   ipcMain.handle('preview-restore-kv', async (_event, payload: RestorePayload) => {
     const logs: LogItem[] = []
+    let tempDir: string | null = null
     try {
       const sourcePath = (payload?.sourcePath || '').trim()
       if (!sourcePath || !existsSync(sourcePath)) {
         throw new Error('备份来源路径无效或不存在')
       }
-      const { backupRoot, tempDir } = await resolveSource(sourcePath, logs)
-      const ctx = await readBackupMeta(backupRoot, logs)
+      const resolved = await resolveSource(sourcePath, logs)
+      tempDir = resolved.tempDir
+      const ctx = await readBackupMeta(resolved.backupRoot, logs)
       const { kv, inferFiles } = await buildKvRequests(ctx, payload?.minioBase || 'C:/minio/deepiresults')
-      // 预览不提交, 清理临时解压目录
-      if (tempDir) await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
       return { success: true, logs, sn: ctx.sn, kv, inferFiles }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       logs.push({ type: 'err', msg: message })
       return { success: false, logs, error: message }
+    } finally {
+      // 预览不提交, 清理解压目录
+      if (tempDir) await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
     }
   })
 
   // 还原备份: 料号 + panel.json/图片 + 前道文件 + AI 数据 + SN/lot KV
-  ipcMain.handle('restore-backup', async (_event, payload: RestorePayload) => {
+  ipcMain.handle('restore-backup', async (event, payload: RestorePayload) => {
     const logs: LogItem[] = []
+    const rawPush = logs.push.bind(logs)
+    // 每条日志同时实时推送到渲染进程 (还原过程较长, 避免界面长时间无反馈)
+    // 注意: 覆盖 push 需为不可枚举属性, 否则返回 logs 经 IPC 序列化时会报
+    // "An object could not be cloned" (可枚举自有函数属性无法克隆)
+    Object.defineProperty(logs, 'push', {
+      value: (...items: LogItem[]) => {
+        const n = rawPush(...items)
+        for (const item of items) {
+          try {
+            event.sender.send('restore-log', item)
+          } catch {
+            /* 窗口已关闭, 忽略 */
+          }
+        }
+        return n
+      },
+      writable: true,
+      configurable: true,
+    })
     const log = (type: LogType, msg: string) => logs.push({ type, msg })
     const step = (msg: string) => log('step', msg)
     const ok = (msg: string) => log('ok', msg)
     const warn = (msg: string) => log('warn', msg)
     const err = (msg: string) => log('err', msg)
 
+    let tempDir: string | null = null
     try {
       const sourcePath = (payload?.sourcePath || '').trim()
       if (!sourcePath || !existsSync(sourcePath)) {
@@ -366,13 +469,14 @@ export function register(): void {
         throw new Error('料号/图片/前道文件基准路径不能为空')
       }
 
-      const { backupRoot, tempDir } = await resolveSource(sourcePath, logs)
-      const ctx = await readBackupMeta(backupRoot, logs)
+      const resolved = await resolveSource(sourcePath, logs)
+      tempDir = resolved.tempDir
+      const ctx = await readBackupMeta(resolved.backupRoot, logs)
       const { sn } = ctx
 
       // 3. 料号文件夹
       step('还原料号文件夹')
-      const productSrc = path.join(backupRoot, 'product')
+      const productSrc = path.join(resolved.backupRoot, 'product')
       if (existsSync(productSrc)) {
         const ids = (await fs.readdir(productSrc, { withFileTypes: true }))
           .filter((e) => e.isDirectory())
@@ -396,42 +500,48 @@ export function register(): void {
         warn('备份中无 product 目录, 跳过')
       }
 
-      // 4. panel.json + 缺陷图片 → minio (目录层级以备份图片镜像为准, 与 json 内 URL 路径一致)
+      // 4. panel.json + 缺陷图片 → minio, 目录固定两层: 基础路径/<SN>/<A|B>
+      //    panel.json 与缺陷图片都放进该面目录, 并改写 json 内图片 URL 到本地
       step('还原 panel.json 与缺陷图片到 minio')
-      const imgRoot = path.join(backupRoot, 'img', 'deepiresults')
-      for (const [jname, side] of await findSideJsonFiles(backupRoot)) {
-        const jpath = path.join(backupRoot, jname)
+      const imgRoot = path.join(resolved.backupRoot, 'img', 'deepiresults')
+      for (const [jname, side] of await findSideJsonFiles(resolved.backupRoot)) {
+        const jpath = path.join(resolved.backupRoot, jname)
         const meta = ctx.sideMeta[side]
         if (!existsSync(jpath) || !meta) {
           warn(`${jname} 不存在, 跳过`)
           continue
         }
-        const pt = meta.process_time
-        const describeName = meta.describe_path || `${side}_${pt}-panel.json`
-        const minioRelDir = await deriveMinioRelDir(backupRoot, side, meta, sn)
-        const targetDir = path.join(minioBase, minioRelDir)
+        const describeName = describeFileName(meta, side)
+        const relDir = minioRelDir(sn, side) // SN/A 或 SN/B
+        const targetDir = path.join(minioBase, sn, side)
         await fs.mkdir(targetDir, { recursive: true })
-        // 改写 json 内图片 URL: 现场机台 IP → 本地 minio 地址
+        // 在备份图片镜像中定位该面图片目录 (兼容现场动态目录层级)
+        const imgDir = await findSideImgDir(imgRoot, side, meta)
+        // 改写 json 内图片 URL: 现场机台 IP → 本地, 目录前缀 → SN/A|B (与实际拷贝位置一致)
         const data = JSON.parse(await fs.readFile(jpath, 'utf8'))
         const count = { n: 0 }
-        rewriteMinioUrls(data, localMinioUrl, count)
+        rewriteMinioUrls(data, localMinioUrl, imgDir?.rel ?? null, relDir, count)
         await fs.writeFile(path.join(targetDir, describeName), JSON.stringify(data))
         const rewritten = count.n ? ` (改写图片 URL ${count.n} 处 → ${localMinioUrl})` : ''
         ok(`${jname} → ${targetDir}\\${describeName}${rewritten}`)
-
-        const imgSideDir = path.join(imgRoot, minioRelDir)
-        if (existsSync(imgSideDir)) {
-          await fs.cp(imgSideDir, targetDir, { recursive: true, force: true })
+        if (imgDir) {
+          const entries = await fs.readdir(imgDir.src, { withFileTypes: true })
+          for (const e of entries) {
+            await fs.cp(path.join(imgDir.src, e.name), path.join(targetDir, e.name), {
+              recursive: true,
+              force: true,
+            })
+          }
           const cnt = (await fs.readdir(targetDir, { recursive: true })).length
           ok(`缺陷图片 ${cnt} 项 → ${targetDir}`)
         } else {
-          warn(`未找到对应图片目录 ${imgSideDir}`)
+          warn(`备份中未找到 ${side} 面图片目录, 仅还原 panel.json`)
         }
       }
 
       // 5. 前道文件 mapping (相对路径原样)
       step('还原前道文件 (mapping)')
-      const mappingSrc = path.join(backupRoot, 'mapping')
+      const mappingSrc = path.join(resolved.backupRoot, 'mapping')
       if (existsSync(mappingSrc)) {
         await fs.cp(mappingSrc, mappingBase, { recursive: true, force: true })
         ok(`mapping → ${mappingBase} (相对路径原样保存)`)
@@ -478,12 +588,13 @@ export function register(): void {
         log('info', `KV 提交完成: 成功 ${okCount}, 失败 ${failCount}`)
       }
 
-      if (tempDir) await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
       return { success: true, logs }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       err(message)
       return { success: false, logs, error: message }
+    } finally {
+      if (tempDir) await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
     }
   })
 }

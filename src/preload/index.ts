@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 
 // 自定义 API
 const api = {
@@ -26,7 +26,15 @@ const api = {
   selectRestoreSource: () => ipcRenderer.invoke('select-restore-source'),
   selectDirPath: () => ipcRenderer.invoke('select-dir-path'),
   previewRestoreKv: (payload: any) => ipcRenderer.invoke('preview-restore-kv', payload),
-  restoreBackup: (payload: any) => ipcRenderer.invoke('restore-backup', payload)
+  restoreBackup: (payload: any) => ipcRenderer.invoke('restore-backup', payload),
+  // 还原过程的实时日志推送, 返回取消订阅函数
+  onRestoreLog: (cb: (item: { type: string; msg: string }) => void) => {
+    const listener = (_e: IpcRendererEvent, item: { type: string; msg: string }) => cb(item)
+    ipcRenderer.on('restore-log', listener)
+    return () => {
+      ipcRenderer.removeListener('restore-log', listener)
+    }
+  }
 }
 
 // 在 window 对象上暴露受保护的方法

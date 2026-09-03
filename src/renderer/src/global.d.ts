@@ -142,6 +142,7 @@ declare global {
         inferFiles?: { fname: string; side: string; dbName: string; count: number }[];
         error?: string;
       }>;
+      onRestoreLog: (cb: (item: { type: string; msg: string }) => void) => () => void;
     };
   }
 }

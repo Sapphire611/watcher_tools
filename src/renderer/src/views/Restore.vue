@@ -23,6 +23,7 @@
         <el-form-item label="minio 基础路径">
           <el-input v-model="minioBase" clearable />
           <el-button class="browse-btn" @click="browse('minioBase')">浏览</el-button>
+          <div class="form-tip">还原结果保存为 基础路径/SN/A、基础路径/SN/B（面板 JSON 与缺陷图片同目录）</div>
         </el-form-item>
 
         <el-form-item label="前道文件基准目录">
@@ -120,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
 
 interface LogItem {
@@ -219,6 +220,21 @@ const browse = async (key: 'productBase' | 'minioBase' | 'mappingBase') => {
     else mappingBase.value = res.path
   }
 }
+
+// 还原过程实时接收主进程推送的日志 (加载期间追加显示, 完成后以最终结果整体刷新)
+let offRestoreLog: (() => void) | null = null
+onMounted(async () => {
+  try {
+    offRestoreLog = window.api.onRestoreLog?.((item) => {
+      if (loading.value) logs.value.push(item)
+    })
+  } catch {
+    offRestoreLog = null
+  }
+})
+onBeforeUnmount(() => {
+  if (offRestoreLog) offRestoreLog()
+})
 
 const mark = (type: string) => {
   const map: Record<string, string> = {
